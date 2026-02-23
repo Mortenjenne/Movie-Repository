@@ -3,6 +3,9 @@ package app.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @NoArgsConstructor
 @ToString
@@ -16,7 +19,7 @@ public class Genre
     private Long id;
 
     @Setter
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false) // TODO add unique constraint in test phase -> keep if working
     private String name;
 
     public Genre(String name)
