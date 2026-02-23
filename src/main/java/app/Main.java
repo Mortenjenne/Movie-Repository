@@ -11,15 +11,14 @@ import java.net.http.HttpClient;
 import java.util.List;
 
 public class Main {
-    private static final String API_KEY = System.getenv("TMDB_APIKEY");
+    private static final String API_ACCESS_TOKEN = System.getenv("API_ACCESS_TOKEN");
 
     public static void main(String[] args) {
         HttpClient client = HttpClient.newHttpClient();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        ITMBDService tmdbService = new TMBDService(client, objectMapper, API_KEY);
-
+        ITMBDService tmdbService = new TMBDService(client, objectMapper, API_ACCESS_TOKEN);
 
         //MovieResultDTO movieResultDTO = tmdbService.fetchMovieByTitle("matrix");
         //MovieDTO movieDTO = tmdbService.getMovieById(373223);

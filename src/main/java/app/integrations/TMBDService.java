@@ -13,23 +13,23 @@ import java.net.http.HttpResponse;
 public class TMBDService implements ITMBDService {
     private final HttpClient client;
     private final ObjectMapper objectMapper;
-    private final String apiKey;
+    private final String apiAccessToken;
     private final String TMBD_BY_IMDB_ID = "https://api.themoviedb.org/3/find/%s?external_source=imdb_id&language=en-US&api_key=%s";
     private final String TMBD_BY_TITLE = "https://api.themoviedb.org/3/search/movie?query=%s&page=%d&api_key=%s";
     private final String TMBD_BY_ID = "https://api.themoviedb.org/3/movie/%d?language=en-US&api_key=%s";
     private final String TMBD_BY_RATING = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=%d&sort_by=popularity.desc&vote_average.gte=%f&&vote_average.lte=%f&api_key=%s";
 
 
-    public TMBDService(HttpClient client, ObjectMapper objectMapper, String apiKey) {
+    public TMBDService(HttpClient client, ObjectMapper objectMapper, String apiAccessToken) {
         this.client = client;
         this.objectMapper = objectMapper;
-        this.apiKey = apiKey;
+        this.apiAccessToken = apiAccessToken;
     }
 
     @Override
     public MovieResultDTO getMoviesByRating(double lowerBoundRating, double upperBoundRating, int currentPage)
     {
-        String url = String.format(TMBD_BY_RATING, currentPage, lowerBoundRating, upperBoundRating, apiKey);
+        String url = String.format(TMBD_BY_RATING, currentPage, lowerBoundRating, upperBoundRating, apiAccessToken);
         HttpRequest request = buildRequest(url);
 
         HttpResponse<String> response = null;
@@ -47,7 +47,7 @@ public class TMBDService implements ITMBDService {
     @Override
     public MovieDTO fetchMovieByImdbId(String id)
     {
-        String url = String.format(TMBD_BY_IMDB_ID, id, apiKey);
+        String url = String.format(TMBD_BY_IMDB_ID, id, apiAccessToken);
 
         HttpRequest request = buildRequest(url);
 
@@ -62,7 +62,7 @@ public class TMBDService implements ITMBDService {
 
     public MovieDTO getMovieById(int movieId)
     {
-        String url = String.format(TMBD_BY_ID, movieId, apiKey);
+        String url = String.format(TMBD_BY_ID, movieId, apiAccessToken);
         HttpRequest request = buildRequest(url);
 
         try
@@ -80,7 +80,7 @@ public class TMBDService implements ITMBDService {
     public MovieResultDTO fetchMovieByTitle(String title, int currentPage)
     {
        validateNotBlank(title);
-       String url = String.format(TMBD_BY_TITLE, title, currentPage, apiKey);
+       String url = String.format(TMBD_BY_TITLE, title, currentPage, apiAccessToken);
 
        HttpRequest request = buildRequest(url);
 
@@ -98,10 +98,11 @@ public class TMBDService implements ITMBDService {
     private HttpRequest buildRequest(String url)
     {
         return HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
-
+            .uri(URI.create(url))
+            .header("accept", "application/json")
+            .header("Authorization", "bearer " + apiAccessToken)
+            .method("GET", HttpRequest.BodyPublishers.noBody())
+            .build();
     }
 
     private void validateNotBlank(String value)
