@@ -6,9 +6,12 @@ import app.entities.Movie;
 import app.entities.Person;
 import app.enums.Gender;
 import app.enums.Role;
+import app.persistence.MovieDAO;
 import app.persistence.daos.IMovieDAO;
+import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -17,10 +20,10 @@ public class TestPopulator
     private final IMovieDAO movieDAO;
     private final Map<String, IEntity> seeded;
 
-    public TestPopulator(IMovieDAO movieDAO, Map<String, IEntity> seeded)
+    public TestPopulator(EntityManagerFactory emf)
     {
-        this.movieDAO = movieDAO;
-        this.seeded = seeded;
+        this.movieDAO = new MovieDAO(emf);
+        this.seeded = new HashMap<>();
     }
 
     public Map<String, IEntity> getSeededData()
