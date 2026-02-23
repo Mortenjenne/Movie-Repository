@@ -1,5 +1,9 @@
 package app;
 
+import app.dtos.MovieDTO;
+import app.integrations.ITMBDService;
+import app.integrations.TMBDService;
+import app.services.MovieService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 

@@ -1,7 +1,7 @@
-package app;
+package app.integrations;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import app.dtos.MovieDTO;
+import app.dtos.MovieResultDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;

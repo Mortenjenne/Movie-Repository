@@ -1,6 +1,7 @@
-package app;
+package app.integrations;
 
-import java.util.List;
+import app.dtos.MovieDTO;
+import app.dtos.MovieResultDTO;
 
 public interface ITMBDService {
     MovieDTO fetchMovieByImdbId(String id);

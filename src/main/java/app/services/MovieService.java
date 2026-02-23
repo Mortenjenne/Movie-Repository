@@ -1,4 +1,8 @@
-package app;
+package app.services;
+
+import app.dtos.MovieDTO;
+import app.dtos.MovieResultDTO;
+import app.integrations.ITMBDService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
