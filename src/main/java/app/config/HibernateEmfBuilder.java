@@ -8,7 +8,7 @@ import org.hibernate.service.ServiceRegistry;
 
 import java.util.Properties;
 
-public final class HibernateEmfBuilder
+final class HibernateEmfBuilder
 {
 
     private HibernateEmfBuilder() {}
