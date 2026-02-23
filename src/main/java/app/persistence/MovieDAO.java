@@ -1,12 +1,12 @@
 package app.persistence;
 
 import app.entities.Movie;
-import app.persistence.daos.IEntityDAO;
-import app.persistence.daos.IEntityReader;
+import app.persistence.daos.IMovieDAO;
 
 import java.util.Set;
 
-public class MovieDAO implements IEntityDAO<Movie, Long>, IEntityReader<Movie, Long> {
+public class MovieDAO implements IMovieDAO
+{
     @Override
     public Movie create(Movie movie) {
         return null;
