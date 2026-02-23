@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Cast
+public class Cast implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

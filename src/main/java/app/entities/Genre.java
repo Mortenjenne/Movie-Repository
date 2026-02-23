@@ -11,7 +11,7 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Genre
+public class Genre implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

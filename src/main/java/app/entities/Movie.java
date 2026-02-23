@@ -13,7 +13,8 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Movie {
+public class Movie implements IEntity
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
