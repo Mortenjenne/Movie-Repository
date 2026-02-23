@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name = "movie")
 @Entity
 public class Movie implements IEntity
 {
@@ -52,6 +53,9 @@ public class Movie implements IEntity
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> genres = new HashSet<>();
 
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Cast> cast = new HashSet<>();
+
     public Movie(String title, String originalTitle, String description, LocalDate releaseYear, String language, double rating, String tagline, String status, Set<Genre> genres)
     {
         this.title = title;
@@ -84,5 +88,25 @@ public class Movie implements IEntity
         {
             throw new IllegalArgumentException ("The movie \"" + this.title + "\" does not contain the genre: " + genre);
         }
+    }
+
+    public void addCast(Cast castMember)
+    {
+        if (castMember == null)
+        {
+            throw new IllegalArgumentException("Cast cannot be null");
+        }
+        cast.add(castMember);
+        castMember.setMovie(this);
+    }
+
+    public void removeCast(Cast castMember)
+    {
+        if (!this.cast.contains(castMember))
+        {
+            throw new IllegalArgumentException("Cast member not found in movie: " + this.title);
+        }
+        cast.remove(castMember);
+        castMember.setMovie(null);
     }
 }
