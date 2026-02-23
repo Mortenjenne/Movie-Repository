@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name = "movie")
 @Entity
 public class Movie implements IEntity
 {

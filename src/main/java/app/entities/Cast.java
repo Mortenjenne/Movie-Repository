@@ -32,11 +32,10 @@ public class Cast implements IEntity
     @JoinColumn(name = "person_id")
     private Person person;
 
-    public Cast(String characterName, Role role, Movie movie, Person person)
+    public Cast(String characterName, Role role, Person person)
     {
         this.characterName = characterName;
         this.role = role;
-        this.movie = movie;
         this.person = person;
     }
 
