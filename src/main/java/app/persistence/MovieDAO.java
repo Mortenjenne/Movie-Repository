@@ -1,11 +1,9 @@
 package app.persistence;
 
 import app.entities.Movie;
+import app.exceptions.DatabaseException;
 import app.persistence.daos.IMovieDAO;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,11 +24,23 @@ public class MovieDAO implements IMovieDAO
 
         try(EntityManager em = emf.createEntityManager())
         {
-            em.getTransaction().begin();
-            em.persist(movie);
-            em.getTransaction().commit();
-
-            return movie;
+            try
+            {
+                em.getTransaction().begin();
+                em.persist(movie);
+                em.getTransaction().commit();
+                return movie;
+            }
+            catch (PersistenceException e)
+            {
+                rollback(em);
+                throw new DatabaseException("Failed to create movie: " + movie.getTitle(), e);
+            }
+            catch (RuntimeException e)
+            {
+                rollback(em);
+                throw e;
+            }
         }
     }
 
@@ -48,13 +58,60 @@ public class MovieDAO implements IMovieDAO
     @Override
     public Movie update(Movie movie)
     {
-        return null;
+        validateNotNull(movie);
+        validateId(movie.getId());
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            try
+            {
+                em.getTransaction().begin();
+                Movie exist = em.find(Movie.class, movie.getId());
+                validateMovieExists(movie.getId(), exist);
+                Movie merged = em.merge(movie);
+                em.getTransaction().commit();
+                return merged;
+            }
+            catch (PersistenceException e)
+            {
+                rollback(em);
+                throw new DatabaseException("Failed to update movie: " + movie.getTitle(), e);
+            }
+            catch (RuntimeException e)
+            {
+                rollback(em);
+                throw e;
+            }
+        }
     }
 
     @Override
     public boolean delete(Long id)
     {
-        return false;
+        validateId(id);
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            try {
+                em.getTransaction().begin();
+                Movie managed = em.find(Movie.class, id);
+                validateMovieExists(id, managed);
+                em.remove(managed);
+                em.getTransaction().commit();
+                return true;
+
+            }
+            catch (PersistenceException e)
+            {
+                rollback(em);
+                throw new DatabaseException("Failed to delete movie with ID: " + id, e);
+            }
+            catch (RuntimeException e)
+            {
+                rollback(em);
+                throw e;
+            }
+        }
     }
 
     @Override
@@ -64,28 +121,34 @@ public class MovieDAO implements IMovieDAO
 
         try(EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.id = :id", Movie.class)
-                    .setParameter("id", id);
-            Movie movie = query.getSingleResult();
-            checkMovieExists(id, movie);
+            Movie movie = em.find(Movie.class, id);
+            validateMovieExists(id, movie);
 
             return movie;
         }
     }
 
-    private void checkMovieExists(Long id, Movie movie)
+    private void rollback(EntityManager em)
+    {
+        if (em.getTransaction().isActive())
+        {
+            em.getTransaction().rollback();
+        }
+    }
+
+    private void validateMovieExists(Long id, Movie movie)
     {
         if (movie == null)
         {
             throw new EntityNotFoundException("Movie with ID " + id + " was not found.");
         }
     }
-    
+
     private void validateNotNull(Movie movie)
     {
         if (movie == null)
         {
-            throw new IllegalArgumentException("Movie" + " cannot be null.");
+            throw new IllegalArgumentException("Movie cannot be null.");
         }
     }
 
