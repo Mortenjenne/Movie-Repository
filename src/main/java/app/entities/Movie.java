@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -43,7 +45,13 @@ public class Movie {
     @Column(name = "status")
     private String status; // TODO Add ENUM
 
-    public Movie(String title, String originalTitle, String description, LocalDate releaseYear, String language, double rating, String tagline, String status)
+    @ManyToMany
+    @JoinTable(name = "movie_genre",
+            joinColumns = @JoinColumn(name = "movies"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private Set<Genre> genres = new HashSet<>();
+
+    public Movie(String title, String originalTitle, String description, LocalDate releaseYear, String language, double rating, String tagline, String status, Set<Genre> genres)
     {
         this.title = title;
         this.originalTitle = originalTitle;
@@ -53,5 +61,27 @@ public class Movie {
         this.rating = rating;
         this.tagline = tagline;
         this.status = status;
+        this.genres = genres;
+    }
+
+    public void addGenre(Genre genre)
+    {
+        if (genre == null)
+        {
+            throw new IllegalArgumentException ("Genre cannot be null");
+        }
+        this.genres.add(genre);
+    }
+
+    public void removeGenre(Genre genre)
+    {
+        if (this.genres.contains(genre))
+        {
+            this.genres.remove(genre);
+        }
+        else
+        {
+            throw new IllegalArgumentException ("The movie \"" + this.title + "\" does not contain the genre: " + genre);
+        }
     }
 }
