@@ -1,0 +1,42 @@
+@startuml
+
+class Person
+{
+id
+name
+gender
+}
+
+class Cast
+{
+id
+Movie
+Person
+character
+known for department : Actor OR Director
+}
+
+class Genre
+{
+id
+name
+}
+
+class Movie
+{
+id
+title
+original title
+overview
+release year
+language
+rating
+tagline
+status
+}
+
+Movie "0..*" --- "0..*" Genre : has
+Movie "1" --- "0..*" Cast : has
+Cast "0..*" --- "1" Person : belongs to
+
+@enduml
