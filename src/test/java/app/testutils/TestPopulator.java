@@ -41,8 +41,8 @@ public class TestPopulator
 
     private void populateGenres()
     {
-        Genre drama = new Genre("Drama");
-        Genre romantic = new Genre("Romantic");
+        Genre drama = new Genre(1L,"Drama");
+        Genre romantic = new Genre(2L,"Romantic");
 
         seeded.put("genre_drama", genreDAO.create(drama));
         seeded.put("genre_romantic", genreDAO.create(romantic));
@@ -50,10 +50,10 @@ public class TestPopulator
 
     private void populatePersons()
     {
-        Person mads = new Person("Mads Mikkelsen", Gender.MALE);
-        Person thomas = new Person("Thomas Vinterberg", Gender.MALE);
-        Person charlie = new Person("Charlie Sheen", Gender.MALE);
-        Person oliver = new Person("Oliver Stone", Gender.MALE);
+        Person mads = new Person(1L,"Mads Mikkelsen", Gender.MALE);
+        Person thomas = new Person(2L,"Thomas Vinterberg", Gender.MALE);
+        Person charlie = new Person(3L, "Charlie Sheen", Gender.MALE);
+        Person oliver = new Person(4L,"Oliver Stone", Gender.MALE);
 
         seeded.put("person_mads", personDAO.create(mads));
         seeded.put("person_thomas", personDAO.create(thomas));
@@ -69,6 +69,7 @@ public class TestPopulator
         Person oliver = (Person) seeded.get("person_oliver");
 
         Movie platoon = new Movie(
+                1L,
                 "Platoon",
                 "Platoon",
                 "As a young and naive recruit in Vietnam, Chris Taylor faces a moral crisis when confronted with the horrors of war and the duality of man.",
@@ -83,6 +84,7 @@ public class TestPopulator
         platoon.addCast(new Cast(null, Role.DIRECTOR, oliver));
 
         Movie jagten = new Movie(
+                2L,
                 "Jagten",
                 "Jagten",
                 "A teacher lives a lonely life, all the while struggling over his son's custody.",
@@ -97,6 +99,7 @@ public class TestPopulator
         jagten.addCast(new Cast(null, Role.DIRECTOR, thomas));
 
         Movie bastarden = new Movie(
+                3L,
                 "Bastarden",
                 "Bastarden",
                 "In 1755, the impoverished Captain Ludvig Kahlen sets out to conquer the uninhabitable Danish heath.",
@@ -110,6 +113,7 @@ public class TestPopulator
         bastarden.addCast(new Cast("Ludvig Kahlen", Role.ACTOR, mads));
 
         Movie druk = new Movie(
+                4L,
                 "Druk",
                 "Druk",
                 "Four high school teachers launch a drinking experiment.",
@@ -124,6 +128,7 @@ public class TestPopulator
         druk.addCast(new Cast(null, Role.DIRECTOR, thomas));
 
         Movie haevnen = new Movie(
+                5L,
                 "Hævnen",
                 "Hævnen",
                 "Two Danish families meet tragic circumstances and connect in unexpected ways.",

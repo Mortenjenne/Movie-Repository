@@ -49,6 +49,7 @@ class MovieDAOTest
         genres.add(romantic);
 
         Movie movie = new Movie(
+                6L,
                 "Festen",
                 "The Celebration",
                 "En familie samles for at fejre patriarkens 60 års fødselsdag, hvor sønnen Christian afslører en ødelæggende hemmelighed.",
