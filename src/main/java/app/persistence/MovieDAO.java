@@ -6,7 +6,6 @@ import app.persistence.daos.IMovieDAO;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 public class MovieDAO implements IMovieDAO
@@ -102,15 +101,15 @@ public class MovieDAO implements IMovieDAO
                 return true;
 
             }
+            catch (EntityNotFoundException e)
+            {
+                rollback(em);
+                throw e;
+            }
             catch (PersistenceException e)
             {
                 rollback(em);
                 throw new DatabaseException("Failed to delete movie with ID: " + id, e);
-            }
-            catch (RuntimeException e)
-            {
-                rollback(em);
-                throw e;
             }
         }
     }
@@ -122,13 +121,17 @@ public class MovieDAO implements IMovieDAO
 
         try(EntityManager em = emf.createEntityManager())
         {
-            Movie movie = em.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.cast WHERE m.id = :id", Movie.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
+            try
+            {
+                return em.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.cast WHERE m.id = :id", Movie.class)
+                        .setParameter("id", id)
+                        .getSingleResult();
 
-            validateMovieExists(id, movie);
-
-            return movie;
+            }
+            catch (NoResultException e)
+            {
+                throw new EntityNotFoundException("Movie with ID " + id + " was not found." + e.getMessage());
+            }
         }
     }
 

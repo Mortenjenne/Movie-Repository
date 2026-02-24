@@ -68,7 +68,8 @@ public class GenreDAO implements IGenreDAO
 
         try (EntityManager em = emf.createEntityManager())
         {
-            validateGenreExists(em, genre);
+            Genre exists = em.find(Genre.class, genre.getId());
+            validateGenreExists(exists, exists.getId());
 
             try
             {
@@ -83,6 +84,10 @@ public class GenreDAO implements IGenreDAO
                 throw new DatabaseException("Failed to update genre: " + e.getMessage());
             }
         }
+        catch (EntityNotFoundException e)
+        {
+            throw new DatabaseException("Failed to update genre" + e.getMessage());
+        }
     }
 
     @Override
@@ -93,7 +98,7 @@ public class GenreDAO implements IGenreDAO
         try (EntityManager em = emf.createEntityManager())
         {
             Genre managedGenre = em.find(Genre.class, id);
-            validateGenreExists(em, managedGenre);
+            validateGenreExists(managedGenre, id);
 
             try {
                 em.getTransaction().begin();
@@ -122,7 +127,7 @@ public class GenreDAO implements IGenreDAO
         try (EntityManager em = emf.createEntityManager())
         {
             Genre managedGenre = em.find(Genre.class, id);
-            validateGenreExists(em, managedGenre);
+            validateGenreExists(managedGenre, id);
             return managedGenre;
         }
         catch (PersistenceException e)
@@ -139,12 +144,11 @@ public class GenreDAO implements IGenreDAO
         }
     }
 
-    private void validateGenreExists(EntityManager em, Genre genre)
+    private void validateGenreExists(Genre exists, Long id)
     {
-        Genre exists = em.find(Genre.class, genre);
         if (exists == null)
         {
-            throw new EntityNotFoundException("Genre with ID " + genre.getId() + " was not found.");
+            throw new EntityNotFoundException("Genre with ID " + id + " was not found.");
         }
     }
 
