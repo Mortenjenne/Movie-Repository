@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Entity
+@Table(name = "movie_cast")
 public class Cast implements IEntity
 {
     @Id

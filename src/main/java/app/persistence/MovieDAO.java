@@ -6,6 +6,7 @@ import app.persistence.daos.IMovieDAO;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class MovieDAO implements IMovieDAO
@@ -121,7 +122,10 @@ public class MovieDAO implements IMovieDAO
 
         try(EntityManager em = emf.createEntityManager())
         {
-            Movie movie = em.find(Movie.class, id);
+            Movie movie = em.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.cast WHERE m.id = :id", Movie.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
             validateMovieExists(id, movie);
 
             return movie;
