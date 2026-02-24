@@ -28,7 +28,7 @@ public class Movie implements IEntity
     @Column(name = "original_title")
     private String originalTitle;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "release_year")

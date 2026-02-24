@@ -1,6 +1,5 @@
 package app.persistence.daos;
 
-import app.entities.Genre;
 import app.entities.Person;
 import app.exceptions.DatabaseException;
 import jakarta.persistence.*;
@@ -69,7 +68,7 @@ public class PersonDAO implements IPersonDAO
 
         try (EntityManager em = emf.createEntityManager())
         {
-            validateGenreExists(em, person);
+            validatePersonExists(em, person);
 
             try
             {
@@ -94,7 +93,7 @@ public class PersonDAO implements IPersonDAO
         try (EntityManager em = emf.createEntityManager())
         {
             Person managedPerson = em.find(Person.class, id);
-            validateGenreExists(em, managedPerson);
+            validatePersonExists(em, managedPerson);
 
             try {
                 em.getTransaction().begin();
@@ -123,7 +122,10 @@ public class PersonDAO implements IPersonDAO
         try (EntityManager em = emf.createEntityManager())
         {
             Person managedPerson = em.find(Person.class, id);
-            validateGenreExists(em, managedPerson);
+            if (managedPerson == null)
+            {
+                throw new EntityNotFoundException("Person with ID " + id + " was not found.");
+            }
             return managedPerson;
         }
         catch (PersistenceException e)
@@ -140,7 +142,7 @@ public class PersonDAO implements IPersonDAO
         }
     }
 
-    private void validateGenreExists(EntityManager em, Person person)
+    private void validatePersonExists(EntityManager em, Person person)
     {
         Person exists = em.find(Person.class, person);
         if (exists == null)

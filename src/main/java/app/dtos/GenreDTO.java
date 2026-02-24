@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record GenreDTO(
         @JsonProperty("id")
-        int movieId,
+        Long movieId,
 
         @JsonProperty("name")
         String name
