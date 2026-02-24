@@ -3,13 +3,15 @@ package app.dtos;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public record GenreDTO(
-        @JsonProperty("id")
-        Long movieId,
+import java.util.List;
 
-        @JsonProperty("name")
-        String name
-)
-{
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record CreditDTO(
+
+        @JsonProperty("cast")
+        List<PersonDTO> actorsDTOs,
+
+        @JsonProperty("crew")
+        List<CrewDTO> crewDTOs
+) {
 }

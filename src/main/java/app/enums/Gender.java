@@ -2,8 +2,10 @@ package app.enums;
 
 public enum Gender
 {
+    UNKNOWN(0),
     FEMALE(1),
-    MALE(2);
+    MALE(2),
+    NON_BINARY_OTHER(3);
 
     private final int value;
 

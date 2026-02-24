@@ -1,6 +1,8 @@
 package app.integrations;
 
+import app.dtos.GenreResultDTO;
 import app.dtos.MovieDTO;
+import app.dtos.MovieDetailDTO;
 import app.dtos.MovieResultDTO;
 
 public interface ITMBDService {
@@ -11,4 +13,10 @@ public interface ITMBDService {
     MovieDTO getMovieById(int movieId);
 
     MovieResultDTO getMoviesByRating(double lowerBoundRating, double upperBoundRating, int currentPage);
+
+    GenreResultDTO getAllGenres();
+
+    MovieResultDTO getAllDaMovies(int currentPage);
+
+    MovieDetailDTO getMovieDetailById(Long id);
 }

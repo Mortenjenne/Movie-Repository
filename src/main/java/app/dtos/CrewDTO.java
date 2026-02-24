@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record PersonDTO(
+public record CrewDTO(
         @JsonProperty("id")
         Long personId,
 
@@ -22,20 +22,20 @@ public record PersonDTO(
         @JsonProperty("original_name")
         String originalName,
 
-        @JsonProperty("cast_id")
-        int castId,
+        @JsonProperty("department")
+        String department,
 
-        @JsonProperty("character")
-        String characterName
+        @JsonProperty("job")
+        String job
 )
 {
-    public Gender getGenderEnum() // TODO Rename
-    {
-        return Gender.fromValue(gender);
-    }
+        public Gender getGenderEnum() // TODO Rename
+        {
+                return Gender.fromValue(gender);
+        }
 
-    public Role getRoleEnum() // TODO Rename
-    {
-        return Role.fromValue(role);
-    }
+        public Role getRoleEnum() // TODO Rename
+        {
+                return Role.fromValue(role);
+        }
 }

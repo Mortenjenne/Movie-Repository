@@ -3,7 +3,16 @@ package app.enums;
 public enum Role
 {
     ACTOR("Acting"),
-    DIRECTOR("Directing");
+    DIRECTOR("Directing"),
+    PRODUCTION("Production"),
+    WRITING("Writing"),
+    CAMERA("Camera"),
+    ART("Art"),
+    EDITING("Editing"),
+    COSTUME("Costume"),
+    SOUND("Sound"),
+    VISUAL_EFFECTS("Visual Effects"),
+    CREW("Crew");
 
     private final String value;
 
