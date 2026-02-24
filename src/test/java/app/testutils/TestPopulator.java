@@ -36,7 +36,7 @@ public class TestPopulator
         populateMovies();
     }
 
-    private void populatePersons()
+    private void populatePersons() // TODO rename to people?
     {
         Person mads = new Person("Mads Mikkelsen", Gender.MALE);
         Person thomas = new Person("Thomas Vinterberg", Gender.MALE);
