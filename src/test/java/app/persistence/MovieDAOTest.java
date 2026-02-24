@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MovieDAOTest
@@ -49,6 +49,7 @@ class MovieDAOTest
         genres.add(romantic);
 
         Movie movie = new Movie(
+                6L,
                 "Festen",
                 "The Celebration",
                 "En familie samles for at fejre patriarkens 60 års fødselsdag, hvor sønnen Christian afslører en ødelæggende hemmelighed.",
@@ -76,7 +77,9 @@ class MovieDAOTest
     }
 
     @Test
-    void getAll() {
+    void getAll()
+    {
+
     }
 
     @Test
@@ -88,6 +91,17 @@ class MovieDAOTest
     }
 
     @Test
-    void getByID() {
+    void getByID()
+    {
+        Movie seed = (Movie) seeded.get("movie_platoon");
+        Movie fetched = movieDAO.getByID(seed.getId());
+
+        assertThat(fetched.getId(), is(seed.getId()));
+        assertThat(fetched.getTitle(), is(seed.getTitle()));
+        assertThat(fetched.getLanguage(), is(seed.getLanguage()));
+        assertThat(fetched.getRating(), is(seed.getRating()));
+        assertThat(fetched.getOriginalTitle(), is(seed.getOriginalTitle()));
+        //assertThat(fetched.getGenres(), hasSize(2));
+        assertThat(fetched.getCast(), hasSize(2));
     }
 }

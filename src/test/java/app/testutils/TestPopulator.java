@@ -1,13 +1,10 @@
 package app.testutils;
 
-import app.entities.Cast;
-import app.entities.IEntity;
-import app.entities.Movie;
-import app.entities.Person;
+import app.entities.*;
 import app.enums.Gender;
 import app.enums.Role;
 import app.persistence.MovieDAO;
-import app.persistence.daos.IMovieDAO;
+import app.persistence.daos.*;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
@@ -18,11 +15,15 @@ import java.util.Map;
 public class TestPopulator
 {
     private final IMovieDAO movieDAO;
+    private final IPersonDAO personDAO;
+    private final IGenreDAO genreDAO;
     private final Map<String, IEntity> seeded;
 
     public TestPopulator(EntityManagerFactory emf)
     {
         this.movieDAO = new MovieDAO(emf);
+        this.personDAO = new PersonDAO(emf);
+        this.genreDAO = new GenreDAO(emf);
         this.seeded = new HashMap<>();
     }
 
@@ -33,20 +34,31 @@ public class TestPopulator
 
     public void populate()
     {
+        populatePersons();
+        populateGenres();
         populateMovies();
     }
 
-    private void populatePersons() // TODO rename to people?
+    private void populateGenres()
     {
-        Person mads = new Person("Mads Mikkelsen", Gender.MALE);
-        Person thomas = new Person("Thomas Vinterberg", Gender.MALE);
-        Person charlie = new Person("Charlie Sheen", Gender.MALE);
-        Person oliver = new Person("Oliver Stone", Gender.MALE);
+        Genre drama = new Genre(1L,"Drama");
+        Genre romantic = new Genre(2L,"Romantic");
 
-        //seeded.put("person_mads", personDAO.create(mads));
-        //seeded.put("person_thomas", personDAO.create(thomas));
-        //seeded.put("person_charlie", personDAO.create(charlie));
-        //seeded.put("person_oliver", personDAO.create(oliver));
+        seeded.put("genre_drama", genreDAO.create(drama));
+        seeded.put("genre_romantic", genreDAO.create(romantic));
+    }
+
+    private void populatePersons()
+    {
+        Person mads = new Person(1L,"Mads Mikkelsen", Gender.MALE);
+        Person thomas = new Person(2L,"Thomas Vinterberg", Gender.MALE);
+        Person charlie = new Person(3L, "Charlie Sheen", Gender.MALE);
+        Person oliver = new Person(4L,"Oliver Stone", Gender.MALE);
+
+        seeded.put("person_mads", personDAO.create(mads));
+        seeded.put("person_thomas", personDAO.create(thomas));
+        seeded.put("person_charlie", personDAO.create(charlie));
+        seeded.put("person_oliver", personDAO.create(oliver));
     }
 
     private void populateMovies()
@@ -57,6 +69,7 @@ public class TestPopulator
         Person oliver = (Person) seeded.get("person_oliver");
 
         Movie platoon = new Movie(
+                1L,
                 "Platoon",
                 "Platoon",
                 "As a young and naive recruit in Vietnam, Chris Taylor faces a moral crisis when confronted with the horrors of war and the duality of man.",
@@ -71,6 +84,7 @@ public class TestPopulator
         platoon.addCast(new Cast(null, Role.DIRECTOR, oliver));
 
         Movie jagten = new Movie(
+                2L,
                 "Jagten",
                 "Jagten",
                 "A teacher lives a lonely life, all the while struggling over his son's custody.",
@@ -85,6 +99,7 @@ public class TestPopulator
         jagten.addCast(new Cast(null, Role.DIRECTOR, thomas));
 
         Movie bastarden = new Movie(
+                3L,
                 "Bastarden",
                 "Bastarden",
                 "In 1755, the impoverished Captain Ludvig Kahlen sets out to conquer the uninhabitable Danish heath.",
@@ -98,6 +113,7 @@ public class TestPopulator
         bastarden.addCast(new Cast("Ludvig Kahlen", Role.ACTOR, mads));
 
         Movie druk = new Movie(
+                4L,
                 "Druk",
                 "Druk",
                 "Four high school teachers launch a drinking experiment.",
@@ -112,6 +128,7 @@ public class TestPopulator
         druk.addCast(new Cast(null, Role.DIRECTOR, thomas));
 
         Movie haevnen = new Movie(
+                5L,
                 "Hævnen",
                 "Hævnen",
                 "Two Danish families meet tragic circumstances and connect in unexpected ways.",
@@ -123,10 +140,10 @@ public class TestPopulator
                 new HashSet<>()
         );
 
-        seeded.put("platoon", movieDAO.create(platoon));
-        seeded.put("jagten", movieDAO.create(jagten));
-        seeded.put("bastarden", movieDAO.create(bastarden));
-        seeded.put("druk", movieDAO.create(druk));
-        seeded.put("haevnen", movieDAO.create(haevnen));
+        seeded.put("movie_platoon", movieDAO.create(platoon));
+        seeded.put("movie_jagten", movieDAO.create(jagten));
+        seeded.put("movie_bastarden", movieDAO.create(bastarden));
+        seeded.put("movie_druk", movieDAO.create(druk));
+        seeded.put("movie_haevnen", movieDAO.create(haevnen));
     }
 }

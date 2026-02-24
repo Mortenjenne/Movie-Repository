@@ -15,7 +15,7 @@ public class TestCleanDB
             em.getTransaction().begin();
             em.createNativeQuery("""
             TRUNCATE TABLE
-                movie
+                movie, movie_cast, person, genre
             RESTART IDENTITY CASCADE
         """).executeUpdate();
             em.getTransaction().commit();
