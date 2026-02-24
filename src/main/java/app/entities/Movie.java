@@ -18,10 +18,9 @@ public class Movie implements IEntity
 {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
     @EqualsAndHashCode.Include
-    private Long id;
+    private Long id; // TMDB ID
 
     @Column(name = "title")
     private String title;
@@ -56,8 +55,9 @@ public class Movie implements IEntity
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Cast> cast = new HashSet<>();
 
-    public Movie(String title, String originalTitle, String description, LocalDate releaseYear, String language, double rating, String tagline, String status, Set<Genre> genres)
+    public Movie(Long id, String title, String originalTitle, String description, LocalDate releaseYear, String language, double rating, String tagline, String status, Set<Genre> genres)
     {
+        this.id = id;
         this.title = title;
         this.originalTitle = originalTitle;
         this.description = description;

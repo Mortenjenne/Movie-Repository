@@ -2,18 +2,20 @@ package app.entities;
 
 import app.enums.Gender;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class Person implements IEntity
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Setter(AccessLevel.NONE)
+    private Long id; // TMDB ID
 
     @Setter
     @Column(name = "name")
@@ -24,8 +26,9 @@ public class Person implements IEntity
     @Column(name = "gender")
     private Gender gender;
 
-    public Person(String name, Gender gender)
+    public Person(Long id, String name, Gender gender)
     {
+        this.id = id;
         this.name = name;
         this.gender = gender;
     }
