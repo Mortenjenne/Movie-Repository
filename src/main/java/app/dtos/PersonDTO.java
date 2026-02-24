@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PersonDTO(
         @JsonProperty("id")
-        int movieId,
+        int personId,
 
         @JsonProperty("gender")
         int gender,

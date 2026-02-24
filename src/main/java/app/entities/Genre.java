@@ -14,16 +14,16 @@ import java.util.Set;
 public class Genre implements IEntity
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Long id;
+    private Long id; // TMDB ID
 
     @Setter
     @Column(nullable = false) // TODO add unique constraint in test phase -> keep if working
     private String name;
 
-    public Genre(String name)
+    public Genre(Long id, String name)
     {
+        this.id = id;
         this.name = name;
     }
 }

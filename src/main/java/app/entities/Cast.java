@@ -2,25 +2,24 @@ package app.entities;
 
 import app.enums.Role;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@NoArgsConstructor
 @Getter
+@Setter
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "movie_cast")
 public class Cast implements IEntity
 {
     @Id
+    @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column(name = "character_name")
     private String characterName;
 
-    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
@@ -38,16 +37,6 @@ public class Cast implements IEntity
         this.characterName = characterName;
         this.role = role;
         this.person = person;
-    }
-
-    public void setPerson(Person person)
-    {
-        this.person = person;
-    }
-
-    public void setMovie(Movie movie)
-    {
-        this.movie = movie;
     }
 
     @Override
