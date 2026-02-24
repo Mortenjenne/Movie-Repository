@@ -5,13 +5,13 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "movie")
 @Entity
 public class Movie implements IEntity
@@ -108,5 +108,17 @@ public class Movie implements IEntity
         }
         cast.remove(castMember);
         castMember.setMovie(null);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Movie movie = (Movie) object;
+        return Objects.equals(id, movie.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

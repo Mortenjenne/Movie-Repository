@@ -2,13 +2,13 @@ package app.entities;
 
 import app.enums.Gender;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Objects;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Entity
 public class Person implements IEntity
@@ -34,17 +34,16 @@ public class Person implements IEntity
     }
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals(Object object)
     {
-        if (this == o) return true;
-        if (!(o instanceof Person)) return false;
-        Person other = (Person) o;
-        return id != null && id.equals(other.id);
+        if (object == null || getClass() != object.getClass()) return false;
+        Person person = (Person) object;
+        return Objects.equals(id, person.id);
     }
 
     @Override
     public int hashCode()
     {
-        return getClass().hashCode();
+        return Objects.hashCode(id);
     }
 }
