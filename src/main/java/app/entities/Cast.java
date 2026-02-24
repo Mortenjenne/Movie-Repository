@@ -37,6 +37,11 @@ public class Cast implements IEntity
         this.characterName = characterName;
         this.role = role;
         this.person = person;
+
+        if (this.characterName == null)
+        {
+            this.characterName = "Undefined";
+        }
     }
 
     @Override

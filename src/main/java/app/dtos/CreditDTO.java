@@ -12,6 +12,6 @@ public record CreditDTO(
         List<PersonDTO> actorsDTOs,
 
         @JsonProperty("crew")
-        List<PersonDTO> crewDTOs
+        List<CrewDTO> crewDTOs
 ) {
 }
