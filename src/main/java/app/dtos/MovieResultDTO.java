@@ -19,5 +19,6 @@ public record MovieResultDTO(
         @JsonProperty("total_results")
         int totalResults
 
-) {
+)
+{
 }

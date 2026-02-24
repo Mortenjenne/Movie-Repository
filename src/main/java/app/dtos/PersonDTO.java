@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PersonDTO(
         @JsonProperty("id")
-        int personId,
+        Long personId,
 
         @JsonProperty("gender")
         int gender,
@@ -26,7 +26,7 @@ public record PersonDTO(
         int castId,
 
         @JsonProperty("character")
-        String character
+        String characterName
 )
 {
     public Gender getGenderEnum() // TODO Rename

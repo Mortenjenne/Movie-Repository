@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record MovieDTO(
         @JsonProperty("id")
-        int movieId,
+        Long movieId,
 
         @JsonProperty("original_title")
         String title,
