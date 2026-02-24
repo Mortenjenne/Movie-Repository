@@ -43,9 +43,11 @@ public class TestPopulator
     {
         Genre drama = new Genre(1L,"Drama");
         Genre romantic = new Genre(2L,"Romantic");
+        Genre thriller = new Genre(3L, "Thriller");
 
         seeded.put("genre_drama", genreDAO.create(drama));
         seeded.put("genre_romantic", genreDAO.create(romantic));
+        seeded.put("genre_thriller", genreDAO.create(thriller));
     }
 
     private void populatePersons()

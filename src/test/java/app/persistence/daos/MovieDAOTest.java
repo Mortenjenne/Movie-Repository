@@ -39,7 +39,7 @@ class MovieDAOTest
     }
 
     @Test
-    @DisplayName("Create - Test creating movie")
+    @DisplayName("Create - Should persist a movie")
     void create()
     {
         Genre drama = (Genre) seeded.get("genre_drama");
