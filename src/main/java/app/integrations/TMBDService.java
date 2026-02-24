@@ -26,7 +26,7 @@ public class TMBDService implements ITMBDService {
     // ========== REFACTOR ==========
 
     private final String TMBD_ALL_GENRES = "https://api.themoviedb.org/3/genre/movie/list";
-    private final String TMDB_ALL_DA_MOVIES_FROM_5_YEARS = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=da&page=%d&release_date.gte=2021-01-01&sort_by=popularity.desc&with_original_language=da";
+    private final String TMDB_ALL_DA_MOVIES_FROM_5_YEARS = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=da&page=%d&primary_release_date.gte=2021-01-01&sort_by=popularity.desc&with_original_language=da";
     private final String TMDB_MOVIE_DETAIL = "https://api.themoviedb.org/3/movie/%d?append_to_response=credits";
 
     public TMBDService(HttpClient client, ObjectMapper objectMapper, String apiAccessToken) {
