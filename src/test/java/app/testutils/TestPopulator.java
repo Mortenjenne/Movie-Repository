@@ -82,6 +82,8 @@ public class TestPopulator
                 7.7,
                 "The first casualty of war is innocence.",
                 "Released",
+                "Denmark",
+                120,
                 new HashSet<>()
         );
         platoon.addCast(new Cast("Chris Taylor", Role.ACTOR, charlie));
@@ -97,6 +99,8 @@ public class TestPopulator
                 8.1,
                 "The hunt begins.",
                 "Released",
+                "Denmark",
+                137,
                 new HashSet<>()
         );
         jagten.addCast(new Cast("Lucas", Role.ACTOR, mads));
@@ -112,6 +116,8 @@ public class TestPopulator
                 7.7,
                 "A captain's ambition, a ruthless rival, and a land that defies them both.",
                 "Released",
+                "Denmark",
+                105,
                 new HashSet<>()
         );
         bastarden.addCast(new Cast("Ludvig Kahlen", Role.ACTOR, mads));
@@ -126,6 +132,8 @@ public class TestPopulator
                 7.7,
                 "When you hit rock bottom, there's only one way to go.",
                 "Released",
+                "Denmark",
+                121,
                 new HashSet<>()
         );
         druk.addCast(new Cast("Martin", Role.ACTOR, mads));
@@ -141,6 +149,8 @@ public class TestPopulator
                 7.6,
                 "Trust no one. Fear nothing.",
                 "Released",
+                "Denmark",
+                90,
                 new HashSet<>()
         );
 

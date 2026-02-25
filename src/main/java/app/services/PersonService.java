@@ -2,6 +2,7 @@ package app.services;
 
 import app.dtos.tmdb.TMDBMovieDetailDTO;
 import app.entities.Person;
+import app.enums.Gender;
 import app.persistence.daos.IPersonDAO;
 
 import java.util.HashSet;
@@ -9,8 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class PersonService
-{
+public class PersonService implements IPersonService {
     private final IPersonDAO personDAO;
 
     public PersonService(IPersonDAO personDAO)
@@ -18,6 +18,20 @@ public class PersonService
         this.personDAO = personDAO;
     }
 
+    @Override
+    public Person findOrCreate(Long id, String name, Gender gender) {
+
+        Person existing = personDAO.findById(id);
+
+        if (existing != null) {
+            return existing;
+        }
+
+        Person person = new Person(id, name, gender);
+        return personDAO.create(person);
+    }
+
+    @Override
     public void saveAllPersons(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS)
     {
         Set<Person> actors = TMDBMovieDetailDTOS.stream()

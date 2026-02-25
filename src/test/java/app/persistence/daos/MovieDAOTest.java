@@ -58,6 +58,8 @@ class MovieDAOTest
                 8.0,
                 "Alle familier har hemmeligheder.",
                 "Released",
+                "Denmark",
+                161,
                 genres
         );
 

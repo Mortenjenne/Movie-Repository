@@ -136,6 +136,27 @@ public class MovieDAO implements IMovieDAO
         }
     }
 
+    public Movie getByIdWithDetails(Long id)
+    {
+        validateId(id);
+
+        try(EntityManager em = emf.createEntityManager())
+        {
+            try
+            {
+                return em.createQuery("SELECT DISTINCT  m FROM Movie m LEFT JOIN FETCH m.cast LEFT JOIN FETCH m.genres WHERE m.id = :id", Movie.class)
+                        .setParameter("id", id)
+                        .getSingleResult();
+
+            }
+            catch (NoResultException e)
+            {
+                throw new EntityNotFoundException("Movie with ID " + id + " was not found." + e.getMessage());
+            }
+        }
+
+    }
+
     @Override
     public List<Movie> getMoviesByHighestRating(int limit)
     {
@@ -175,6 +196,40 @@ public class MovieDAO implements IMovieDAO
             {
                 throw new EntityNotFoundException("Movie with title " + title + " was not found." + e.getMessage());
             }
+        }
+    }
+
+    @Override
+    public List<Movie> searchByTitle(String title)
+    {
+        validateTitle(title);
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery(
+                            "SELECT DISTINCT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(:title)",
+                            Movie.class
+                    )
+                    .setParameter("title", "%" + title + "%")
+                    .getResultList();
+        }
+    }
+
+    @Override
+    public boolean existsById(Long id)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.find(Movie.class, id) != null;
+        }
+    }
+
+    public Double getAverageMovieRatings()
+    {
+        try(EntityManager em = emf.createEntityManager())
+        {
+            TypedQuery<Double> query = em.createQuery("SELECT AVG(m.rating) FROM Movie m", Double.class);
+            return query.getSingleResult();
         }
     }
 

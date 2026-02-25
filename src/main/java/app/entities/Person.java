@@ -15,6 +15,7 @@ public class Person implements IEntity
 {
     @Id
     @Setter(AccessLevel.NONE)
+    @Column(name = "person_id")
     private Long id; // TMDB ID
 
     @Setter
