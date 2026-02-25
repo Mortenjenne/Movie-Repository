@@ -62,11 +62,25 @@ public class Main {
         //Set<MovieDTO> allMovies = movieService.getAllMovies();
         //System.out.println(allMovies.size());
 
-        MovieFullDetailDTO movieFullDetailDTO = movieService.getFullMovieDetail(1583668L);
-        System.out.println(movieFullDetailDTO);
+        //MovieFullDetailDTO movieFullDetailDTO = movieService.getFullMovieDetail(1583668L);
+        //System.out.println(movieFullDetailDTO);
 
+        System.out.println("-----Search result--------");
         List<MovieDTO> result = movieSearchService.searchByTitle("mine");
         result.forEach(System.out::println);
+
+        System.out.println("-----Lowest rated--------");
+        List<MovieDTO> lowestRated = movieSearchService.getLowestRated(10);
+        lowestRated.forEach(m -> System.out.println(m.originalTitle() + " rating: " + m.voteAverage()));
+
+        System.out.println("-----Highest rated--------");
+        List<MovieDTO> highestRated = movieSearchService.getTopRated(10);
+        highestRated.forEach(m -> System.out.println(m.originalTitle() + " rating: " + m.voteAverage()));
+
+        System.out.println("-----All movies average rating--------");
+        Double totalAverage = movieSearchService.getAverageRating();
+        System.out.println(totalAverage);
+
     }
 
 }

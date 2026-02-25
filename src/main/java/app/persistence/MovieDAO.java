@@ -144,7 +144,7 @@ public class MovieDAO implements IMovieDAO
         {
             try
             {
-                return em.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.cast LEFT JOIN FETCH m.genres WHERE m.id = :id", Movie.class)
+                return em.createQuery("SELECT DISTINCT  m FROM Movie m LEFT JOIN FETCH m.cast LEFT JOIN FETCH m.genres WHERE m.id = :id", Movie.class)
                         .setParameter("id", id)
                         .getSingleResult();
 
@@ -228,7 +228,7 @@ public class MovieDAO implements IMovieDAO
     {
         try(EntityManager em = emf.createEntityManager())
         {
-            TypedQuery<Double> query = em.createQuery("SELECT avg (m.rating) FROM Movie m", Double.class);
+            TypedQuery<Double> query = em.createQuery("SELECT AVG(m.rating) FROM Movie m", Double.class);
             return query.getSingleResult();
         }
     }

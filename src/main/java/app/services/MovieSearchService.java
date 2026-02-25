@@ -1,10 +1,8 @@
 package app.services;
 
 import app.dtos.MovieDTO;
-import app.entities.Movie;
 import app.persistence.daos.IMovieDAO;
 import app.utils.DTOMapper;
-import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
 
@@ -35,11 +33,17 @@ public class MovieSearchService
     }
     public List<MovieDTO> getTopRated(int limit)
     {
-        return null;
+        return movieDAO.getMoviesByHighestRating(limit)
+                .stream()
+                .map(DTOMapper::mapMovieToDTO)
+                .toList();
     }
     public List<MovieDTO> getLowestRated(int limit)
     {
-        return null;
+        return movieDAO.getMoviesByLowestRating(limit)
+                .stream()
+                .map(DTOMapper::mapMovieToDTO)
+                .toList();
     }
     public List<MovieDTO> getMostPopular(int limit)
     {

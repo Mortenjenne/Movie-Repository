@@ -30,12 +30,20 @@ public class MovieService
     {
         validateNotNull(dto);
 
+        Movie movie = buildMovie(dto);
         boolean exists = movieDAO.existsById(dto.id());
 
-        Movie movie = buildMovie(dto);
-        Movie created = movieDAO.create(movie);
+        Movie result;
+        if(exists)
+        {
+            result = movieDAO.update(movie);
+        }
+        else
+        {
+           result = movieDAO.create(movie);
+        }
 
-        return DTOMapper.mapMovieToDTO(created);
+        return DTOMapper.mapMovieToDTO(result);
     }
 
     public MovieDTO updateMovie(UpdateMovieDTO updateMovieDTO)
