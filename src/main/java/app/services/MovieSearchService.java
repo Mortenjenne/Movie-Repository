@@ -52,13 +52,19 @@ public class MovieSearchService implements IMovieSearchService {
     @Override
     public List<MovieDTO> searchByActor(String actorName)
     {
-        return null;
+        return movieDAO.getMoviesByActor(actorName)
+                .stream()
+                .map(DTOMapper::mapMovieToDTO)
+                .toList();
     }
 
     @Override
     public List<MovieDTO> searchByDirector(String directorName)
     {
-        return null;
+        return movieDAO.getMoviesByDirector(directorName)
+                .stream()
+                .map(DTOMapper::mapMovieToDTO)
+                .toList();
     }
 
     @Override

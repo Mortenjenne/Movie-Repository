@@ -14,6 +14,7 @@ import app.persistence.MovieDAO;
 import app.persistence.daos.*;
 import app.persistence.daos.IPersonDAO;
 import app.services.*;
+import app.utils.ExecutionTimer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityManagerFactory;
@@ -27,6 +28,8 @@ public class Main {
     private static final String API_ACCESS_TOKEN = System.getenv("API_ACCESS_TOKEN");
 
     public static void main(String[] args) {
+
+        ExecutionTimer.start();
 
         HttpClient client = HttpClient.newHttpClient();
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
@@ -54,43 +57,55 @@ public class Main {
                 .map(TMDBMovieDTO::movieId)
                 .collect(Collectors.toSet());
 
-        System.out.println(
-                movieIds.stream().distinct().count()
+        System.out.println("Number of unique Danish movies fetched from TMDB API: " +
+                movieIds.stream().distinct().count() + "\n"
         );
 
-
+        System.out.println("Fetching movie details from TMDB API...");
         List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
 
+        System.out.println("Persisting...");
         genreService.saveAllGenres(genres);
-        System.out.println("persisted genres");
+        System.out.println("Persisted genres...");
         personService.saveAllPersons(TMDBMovieDetailDTOS);
-        System.out.println("persisted persons");
+        System.out.println("Persisted persons...");
         try {
             movieService.saveAllMovies(TMDBMovieDetailDTOS);
+            System.out.println("Persisted movies...");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         Set<MovieDTO> allMovies = movieService.getAllMovies();
-        System.out.println(allMovies.size());
+        System.out.println("\nNumber of unique danish movies fetched from database: " + allMovies.size());
 
         MovieFullDetailDTO movieFullDetailDTO = movieService.getFullMovieDetail(1583668L);
+        System.out.println("\n=============== FULL MOVIE DETAILS (BY ID) ===============");
         System.out.println(movieFullDetailDTO);
 
-        System.out.println("-----Search result--------");
+        System.out.println("\n=============== SEARCH BY TITLE ===============");
         List<MovieDTO> result = movieSearchService.searchByTitle("mine");
         result.forEach(System.out::println);
 
-        System.out.println("-----Lowest rated--------");
+        System.out.println("\n=============== SEARCH BY ACTOR ===============");
+        List<MovieDTO> actorMovies = movieSearchService.searchByActor("Mads Mikkelsen");
+        actorMovies.forEach(System.out::println);
+
+        System.out.println("\n=============== SEARCH BY DIRECTOR ===============");
+        List<MovieDTO> directorMovies = movieSearchService.searchByDirector("Ander Thomas Jensen");
+        directorMovies.forEach(System.out::println);
+
+        System.out.println("\n=============== LOWEST RATED ===============");
         List<MovieDTO> lowestRated = movieSearchService.getLowestRated(10);
-        lowestRated.forEach(m -> System.out.println(m.originalTitle() + " rating: " + m.voteAverage()));
+        lowestRated.forEach(m -> System.out.println(m.originalTitle() + " | Rating: " + m.voteAverage()));
 
-        System.out.println("-----Highest rated--------");
+        System.out.println("\n=============== HIGHEST RATED ===============");
         List<MovieDTO> highestRated = movieSearchService.getTopRated(10);
-        highestRated.forEach(m -> System.out.println(m.originalTitle() + " rating: " + m.voteAverage()));
+        highestRated.forEach(m -> System.out.println(m.originalTitle() + " | Rating: " + m.voteAverage()));
 
-        System.out.println("-----All movies average rating--------");
+        System.out.println("\n=============== AVERAGE RATING OF ALL MOVIES ===============");
         Double totalAverage = movieSearchService.getAverageRating();
-        System.out.println(totalAverage);
+        System.out.println(String.format("%.2f\n", totalAverage));
 
+        ExecutionTimer.finish();
     }
 }
