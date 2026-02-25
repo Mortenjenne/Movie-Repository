@@ -6,11 +6,15 @@ import java.util.List;
 
 public interface IMovieDAO extends IEntityDAO<Movie, Long>, IEntityReader<Movie, Long>
 {
-    public List<Movie> getMoviesByHighestRating(int limit);
+    List<Movie> getMoviesByHighestRating(int limit);
 
-    public List<Movie> getMoviesByLowestRating(int limit);
+    List<Movie> getMoviesByLowestRating(int limit);
 
-    public Movie getMovieByTitle(String title);
+    Movie getMovieByTitle(String title);
+
+    List<Movie> getMoviesByActor(String actor);
+
+    List<Movie> getMoviesByDirector(String director);
 
     Movie getByIdWithDetails(Long id);
 
