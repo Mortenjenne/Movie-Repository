@@ -57,7 +57,7 @@ public class Main {
                 .map(TMDBMovieDTO::movieId)
                 .collect(Collectors.toSet());
 
-        System.out.println("Number of unique Danish movies fetched from TMDB API: " +
+        System.out.println("\nNumber of unique Danish movies fetched from TMDB API: " +
                 movieIds.stream().distinct().count() + "\n"
         );
 
@@ -91,7 +91,7 @@ public class Main {
         actorMovies.forEach(System.out::println);
 
         System.out.println("\n=============== SEARCH BY DIRECTOR ===============");
-        List<MovieDTO> directorMovies = movieSearchService.searchByDirector("Ander Thomas Jensen");
+        List<MovieDTO> directorMovies = movieSearchService.searchByDirector("Anders Thomas Jensen");
         directorMovies.forEach(System.out::println);
 
         System.out.println("\n=============== LOWEST RATED ===============");
@@ -104,7 +104,7 @@ public class Main {
 
         System.out.println("\n=============== AVERAGE RATING OF ALL MOVIES ===============");
         Double totalAverage = movieSearchService.getAverageRating();
-        System.out.println(String.format("%.2f\n", totalAverage));
+        System.out.println(String.format("Rating: %.2f\n", totalAverage));
 
         ExecutionTimer.finish();
     }
