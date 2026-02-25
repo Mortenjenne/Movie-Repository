@@ -21,7 +21,6 @@ public class MovieService
 
     public MovieService(IMovieDAO movieDAO, IPersonDAO personDAO)
     {
-
         this.movieDAO = movieDAO;
         this.personDAO = personDAO;
     }
@@ -30,9 +29,64 @@ public class MovieService
     {
         validateNotNull(dto);
 
+        Movie movie = buildMovie(dto);
+        Movie created = movieDAO.create(movie);
+
+        return mapToDTO(created);
+    }
+
+    public MovieDTO updateMovie(UpdateMovieDTO updateMovieDTO)
+    {
+        validateNotNull(updateMovieDTO);
+
+        Movie movie = movieDAO.getByID(updateMovieDTO.movieId());
+        movie.setTitle(updateMovieDTO.title());
+
+        Movie updated = movieDAO.update(movie);
+
+        return mapToDTO(updated);
+    }
+
+    public Set<MovieDTO> getAllMovies()
+    {
+        return movieDAO.getAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toSet());
+    }
+
+    public MovieDTO findById(Long id)
+    {
+        Movie movie = movieDAO.getByID(id);
+        return mapToDTO(movie);
+    }
+
+    public void saveAllMovies(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS)
+    {
+        if(TMDBMovieDetailDTOS == null || TMDBMovieDetailDTOS.isEmpty())
+        {
+            throw new IllegalArgumentException("List of movie details cannot be null");
+        }
+
+        TMDBMovieDetailDTOS.forEach(m -> {
+            Movie movie = buildMovie(m);
+            movieDAO.create(movie);
+        });
+    }
+
+
+
+    private Movie buildMovie(TMDBMovieDetailDTO dto) {
         Set<Genre> genres = dto.genres().stream()
                 .map(g -> new Genre(g.movieId(), g.name()))
                 .collect(Collectors.toSet());
+
+        String originContry = "";
+
+        if(dto.originCountries().get(0) != null)
+        {
+            originContry = dto.originCountries().get(0);
+        }
 
         Movie movie = new Movie(
                 dto.id(),
@@ -44,6 +98,8 @@ public class MovieService
                 dto.voteAverage(),
                 dto.tagline(),
                 dto.status(),
+                originContry,
+                dto.runtime(),
                 genres
         );
 
@@ -67,68 +123,23 @@ public class MovieService
             movie.addCast(cm);
         });
 
-
+        return movie;
     }
 
-    public void updateMovie(UpdateMovieDTO updateMovieDTO)
-    {
-        validateNotNull(updateMovieDTO);
-
-        Movie movie = movieDAO.getByID(updateMovieDTO.movieId());
-        movie.setTitle(updateMovieDTO.title());
-
-        Movie updated = movieDAO.update(movie);
-    }
-
-    public void saveAllMovies(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS)
-    {
-        if(TMDBMovieDetailDTOS == null || TMDBMovieDetailDTOS.isEmpty())
-        {
-            throw new IllegalArgumentException("List of movie details cannot be null");
-        }
-
-        TMDBMovieDetailDTOS.forEach(m -> {
-
-            Set<Genre> genres = m.genres().stream()
-                    .map(g -> new Genre(g.movieId(), g.name()))
-                    .collect(Collectors.toSet());
-
-            Movie movie = new Movie(
-                    m.id(),
-                    m.title(),
-                    m.originalTitle(),
-                    m.overview(),
-                    m.releaseDate(),
-                    m.originalLanguage(),
-                    m.voteAverage(),
-                    m.tagline(),
-                    m.status(),
-                    genres
-            );
-
-            Set<Cast> castActors = m.TMDBCreditDTO().actorsDTOs()
-                    .stream()
-                    .filter(a -> a.role().equals("Acting"))
-                    .map(a -> new Cast(a.characterName(), Role.ACTOR, personDAO.getByID(a.personId())))
-                    .collect(Collectors.toSet());
-
-            Set<Cast> castDirectors = m.TMDBCreditDTO().TMDBCrewDTOS()
-                    .stream()
-                    .filter(a -> a.job().equals("Director"))
-                    .map(a -> new Cast(null, Role.DIRECTOR, personDAO.getByID(a.personId())))
-                    .collect(Collectors.toSet());
-
-
-            castActors.forEach(cm -> {
-                movie.addCast(cm);
-            });
-
-            castDirectors.forEach(cm -> {
-                movie.addCast(cm);
-            });
-
-            movieDAO.create(movie);
-        });
+    private MovieDTO mapToDTO(Movie movie) {
+        return new MovieDTO(
+                movie.getId(),
+                movie.getOriginalTitle(),
+                movie.getTitle(),
+                movie.getOriginCountry(),
+                movie.getLanguage(),
+                movie.getDescription(),
+                movie.getReleaseYear(),
+                movie.getRuntime(),
+                movie.getStatus(),
+                movie.getTagline(),
+                movie.getRating()
+        );
     }
 
     public void validateNotNull(Object exists)

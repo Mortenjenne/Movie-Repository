@@ -21,7 +21,7 @@ public record MovieDTO(
 
         int runtime,
 
-        Status status,
+        String status,
 
         String tagline,
 

@@ -31,11 +31,14 @@ public class Movie implements IEntity
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "origin_country")
+    private String originCountry;
+
     @Column(name = "release_year")
     private LocalDate releaseYear;
 
     @Column(name = "language")
-    private String language; // TODO Add ENUM
+    private String language;
 
     @Column(name = "rating")
     private double rating;
@@ -44,7 +47,10 @@ public class Movie implements IEntity
     private String tagline;
 
     @Column(name = "status")
-    private String status; // TODO Add ENUM
+    private String status;
+
+    @Column(name = "runtime")
+    private Integer runtime;
 
     @ManyToMany
     @JoinTable(name = "movie_genre",
@@ -55,7 +61,7 @@ public class Movie implements IEntity
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Cast> cast = new HashSet<>();
 
-    public Movie(Long id, String title, String originalTitle, String description, LocalDate releaseYear, String language, double rating, String tagline, String status, Set<Genre> genres)
+    public Movie(Long id, String title, String originalTitle, String description, LocalDate releaseYear, String language, double rating, String tagline, String status, String originCountry, Integer runtime, Set<Genre> genres)
     {
         this.id = id;
         this.title = title;
@@ -63,9 +69,11 @@ public class Movie implements IEntity
         this.description = description;
         this.releaseYear = releaseYear;
         this.language = language;
+        this.originCountry = originCountry;
         this.rating = rating;
         this.tagline = tagline;
         this.status = status;
+        this.runtime = runtime;
         this.genres = genres;
     }
 
