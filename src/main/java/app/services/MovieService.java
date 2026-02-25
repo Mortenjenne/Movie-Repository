@@ -112,7 +112,12 @@ public class MovieService implements IMovieService {
 
         TMDBMovieDetailDTOS.forEach(m -> {
             Movie movie = buildMovie(m);
-            movieDAO.create(movie);
+            boolean existing = movieDAO.existsById(movie.getId());
+
+            if (!existing) {
+                movieDAO.create(movie);
+            }
+
         });
     }
 

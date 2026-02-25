@@ -135,6 +135,14 @@ public class PersonDAO implements IPersonDAO
         }
     }
 
+    public Person findById(Long id)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.find(Person.class, id);
+        }
+    }
+
     private void rollback(EntityManager em)
     {
         if (em.getTransaction().isActive())

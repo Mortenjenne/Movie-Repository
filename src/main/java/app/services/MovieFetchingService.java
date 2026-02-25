@@ -9,6 +9,7 @@ import app.integrations.ITMBDClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class MovieFetchingService
 {
@@ -19,7 +20,7 @@ public class MovieFetchingService
         this.tmdbService = tmdbService;
     }
 
-    public List<TMDBMovieDetailDTO> getAllMovieDetails(List<Long> movieIds)
+    public List<TMDBMovieDetailDTO> getAllMovieDetails(Set<Long> movieIds)
     {
         List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = new ArrayList<>();
 

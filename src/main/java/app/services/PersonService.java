@@ -21,7 +21,7 @@ public class PersonService implements IPersonService {
     @Override
     public Person findOrCreate(Long id, String name, Gender gender) {
 
-        Person existing = personDAO.getByID(id);
+        Person existing = personDAO.findById(id);
 
         if (existing != null) {
             return existing;

@@ -33,7 +33,7 @@ public final class HibernateConfig
 
         //TODO
         // change to update in production
-        props.put("hibernate.hbm2ddl.auto", "update");
+        props.put("hibernate.hbm2ddl.auto", "create");
 
         if (System.getenv("DEPLOYED") != null)
         {

@@ -12,6 +12,7 @@ import app.integrations.ITMBDClient;
 import app.integrations.TMBDClient;
 import app.persistence.MovieDAO;
 import app.persistence.daos.*;
+import app.persistence.daos.IPersonDAO;
 import app.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,12 +21,12 @@ import jakarta.persistence.EntityManagerFactory;
 import java.net.http.HttpClient;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Main {
     private static final String API_ACCESS_TOKEN = System.getenv("API_ACCESS_TOKEN");
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
 
         HttpClient client = HttpClient.newHttpClient();
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
@@ -33,37 +34,47 @@ public class Main {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         ITMBDClient tmbdClient = new TMBDClient(client, objectMapper, API_ACCESS_TOKEN);
-        MovieFetchingService movieFetchingService = new MovieFetchingService(tmbdClient);
+
 
         IPersonDAO personDAO = new PersonDAO(emf);
         IMovieDAO movieDAO = new MovieDAO(emf);
         IGenreDAO genreDAO = new GenreDAO(emf);
 
-        MovieService movieService = new MovieService(movieDAO, personDAO);
-        MovieSearchService movieSearchService = new MovieSearchService(movieDAO);
+        MovieFetchingService movieFetchingService = new MovieFetchingService(tmbdClient);
         PersonService personService = new PersonService(personDAO);
         GenreService genreService = new GenreService(genreDAO);
-
-        //List<Genre> genres = movieFetchingService.getAllGenres();
-        //List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
-        //List<Long> movieIds = danishTMDBMovieDTOS.stream()
-        //        .map(TMDBMovieDTO::movieId)
-        //        .toList();
+        MovieService movieService = new MovieService(movieDAO, personDAO);
+        MovieSearchService movieSearchService = new MovieSearchService(movieDAO);
 
 
-        //List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
+        List<Genre> genres = movieFetchingService.getAllGenres();
+        List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
 
-        //genreService.saveAllGenres(genres);
-        //System.out.println("persisted genres");
-        //personService.saveAllPersons(TMDBMovieDetailDTOS);
-        //System.out.println("persisted persons");
-        //movieService.saveAllMovies(TMDBMovieDetailDTOS);
+        Set<Long> movieIds = danishTMDBMovieDTOS.stream()
+                .map(TMDBMovieDTO::movieId)
+                .collect(Collectors.toSet());
 
-        //Set<MovieDTO> allMovies = movieService.getAllMovies();
-        //System.out.println(allMovies.size());
+        System.out.println(
+                movieIds.stream().distinct().count()
+        );
 
-        //MovieFullDetailDTO movieFullDetailDTO = movieService.getFullMovieDetail(1583668L);
-        //System.out.println(movieFullDetailDTO);
+
+        List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
+
+        genreService.saveAllGenres(genres);
+        System.out.println("persisted genres");
+        personService.saveAllPersons(TMDBMovieDetailDTOS);
+        System.out.println("persisted persons");
+        try {
+            movieService.saveAllMovies(TMDBMovieDetailDTOS);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Set<MovieDTO> allMovies = movieService.getAllMovies();
+        System.out.println(allMovies.size());
+
+        MovieFullDetailDTO movieFullDetailDTO = movieService.getFullMovieDetail(1583668L);
+        System.out.println(movieFullDetailDTO);
 
         System.out.println("-----Search result--------");
         List<MovieDTO> result = movieSearchService.searchByTitle("mine");
@@ -82,5 +93,4 @@ public class Main {
         System.out.println(totalAverage);
 
     }
-
 }
