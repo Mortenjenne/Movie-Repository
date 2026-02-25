@@ -15,8 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class MovieService
-{
+public class MovieService implements IMovieService {
     private final IMovieDAO movieDAO;
     private final IPersonDAO personDAO;
 
@@ -26,9 +25,11 @@ public class MovieService
         this.personDAO = personDAO;
     }
 
+    @Override
     public MovieDTO submitMovie(TMDBMovieDetailDTO dto)
     {
         validateNotNull(dto);
+        validateId(dto.id());
 
         Movie movie = buildMovie(dto);
         boolean exists = movieDAO.existsById(dto.id());
@@ -46,9 +47,11 @@ public class MovieService
         return DTOMapper.mapMovieToDTO(result);
     }
 
+    @Override
     public MovieDTO updateMovie(UpdateMovieDTO updateMovieDTO)
     {
         validateNotNull(updateMovieDTO);
+        validateId(updateMovieDTO.movieId());
 
         Movie movie = movieDAO.getByID(updateMovieDTO.movieId());
         movie.setTitle(updateMovieDTO.title());
@@ -58,6 +61,7 @@ public class MovieService
         return DTOMapper.mapMovieToDTO(updated);
     }
 
+    @Override
     public Set<MovieDTO> getAllMovies()
     {
         return movieDAO.getAll()
@@ -66,14 +70,21 @@ public class MovieService
                 .collect(Collectors.toSet());
     }
 
+    @Override
     public MovieDTO findById(Long id)
     {
+        validateId(id);
+
         Movie movie = movieDAO.getByID(id);
         return DTOMapper.mapMovieToDTO(movie);
     }
 
+    @Override
     public MovieFullDetailDTO getFullMovieDetail(Long id)
     {
+        validateId(id);
+
+
         Movie movie = movieDAO.getByIdWithDetails(id);
 
         MovieDTO movieDTO = DTOMapper.mapMovieToDTO(movie);
@@ -91,6 +102,7 @@ public class MovieService
         return new MovieFullDetailDTO(movieDTO, cast, genres);
     }
 
+    @Override
     public void saveAllMovies(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS)
     {
         if(TMDBMovieDetailDTOS == null || TMDBMovieDetailDTOS.isEmpty())
@@ -149,11 +161,20 @@ public class MovieService
         return movie;
     }
 
+    @Override
     public void validateNotNull(Object exists)
     {
         if(exists == null)
         {
             throw new IllegalArgumentException("Movie cant be null");
+        }
+    }
+
+    private void validateId(Long id)
+    {
+        if (id == null || id <= 0)
+        {
+            throw new IllegalArgumentException("Invalid ID: Must be provided and greater than 0.");
         }
     }
 }

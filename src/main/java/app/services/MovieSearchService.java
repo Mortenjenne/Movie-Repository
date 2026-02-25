@@ -6,8 +6,7 @@ import app.utils.DTOMapper;
 
 import java.util.List;
 
-public class MovieSearchService
-{
+public class MovieSearchService implements IMovieSearchService {
     private final IMovieDAO movieDAO;
 
     public MovieSearchService(IMovieDAO movieDAO)
@@ -15,6 +14,7 @@ public class MovieSearchService
         this.movieDAO = movieDAO;
     }
 
+    @Override
     public List<MovieDTO> searchByTitle(String title)
     {
         if (title == null || title.isBlank()) {
@@ -27,10 +27,7 @@ public class MovieSearchService
                 .toList();
     }
 
-    public List<MovieDTO> getMoviesByGenre(String genreName)
-    {
-        return null;
-    }
+    @Override
     public List<MovieDTO> getTopRated(int limit)
     {
         return movieDAO.getMoviesByHighestRating(limit)
@@ -38,6 +35,7 @@ public class MovieSearchService
                 .map(DTOMapper::mapMovieToDTO)
                 .toList();
     }
+    @Override
     public List<MovieDTO> getLowestRated(int limit)
     {
         return movieDAO.getMoviesByLowestRating(limit)
@@ -45,11 +43,31 @@ public class MovieSearchService
                 .map(DTOMapper::mapMovieToDTO)
                 .toList();
     }
+    @Override
     public List<MovieDTO> getMostPopular(int limit)
     {
         return null;
     }
 
+    @Override
+    public List<MovieDTO> searchByActor(String actorName)
+    {
+        return null;
+    }
+
+    @Override
+    public List<MovieDTO> searchByDirector(String directorName)
+    {
+        return null;
+    }
+
+    @Override
+    public List<MovieDTO> getMoviesByGenre(String genreName)
+    {
+        return null;
+    }
+
+    @Override
     public Double getAverageRating()
     {
         return movieDAO.getAverageMovieRatings();
