@@ -6,6 +6,7 @@ import app.persistence.daos.IMovieDAO;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MovieDAO implements IMovieDAO
@@ -135,6 +136,48 @@ public class MovieDAO implements IMovieDAO
         }
     }
 
+    @Override
+    public List<Movie> getMoviesByHighestRating(int limit)
+    {
+        try(EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.rating DESC", Movie.class)
+                    .setMaxResults(limit)
+                    .getResultList();
+        }
+    }
+
+    @Override
+    public List<Movie> getMoviesByLowestRating(int limit)
+    {
+        try(EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.rating ASC", Movie.class)
+                    .setMaxResults(limit)
+                    .getResultList();
+        }
+    }
+
+    @Override
+    public Movie getMovieByTitle(String title)
+    {
+        validateTitle(title);
+
+        try(EntityManager em = emf.createEntityManager())
+        {
+            try
+            {
+                return em.createQuery("SELECT DISTINCT m FROM Movie m LEFT JOIN FETCH m.cast WHERE m.title = :title", Movie.class)
+                        .setParameter("title", title)
+                        .getSingleResult();
+            }
+            catch (NoResultException e)
+            {
+                throw new EntityNotFoundException("Movie with title " + title + " was not found." + e.getMessage());
+            }
+        }
+    }
+
     private void rollback(EntityManager em)
     {
         if (em.getTransaction().isActive())
@@ -164,6 +207,14 @@ public class MovieDAO implements IMovieDAO
         if (id == null || id <= 0)
         {
             throw new IllegalArgumentException("Invalid ID: Must be provided and greater than 0.");
+        }
+    }
+
+    private void validateTitle(String title)
+    {
+        if (title == null || title.trim().isEmpty())
+        {
+            throw new IllegalArgumentException("Invalid title: Must be provided and not empty.");
         }
     }
 }
