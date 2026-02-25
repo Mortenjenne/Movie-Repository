@@ -8,10 +8,12 @@ import app.entities.Movie;
 import app.enums.Role;
 import app.persistence.daos.IMovieDAO;
 import app.persistence.daos.IPersonDAO;
+import app.utils.DTOMapper;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 public class MovieService
 {
@@ -31,7 +33,7 @@ public class MovieService
         Movie movie = buildMovie(dto);
         Movie created = movieDAO.create(movie);
 
-        return mapToDTO(created);
+        return DTOMapper.mapMovieToDTO(created);
     }
 
     public MovieDTO updateMovie(UpdateMovieDTO updateMovieDTO)
@@ -43,37 +45,37 @@ public class MovieService
 
         Movie updated = movieDAO.update(movie);
 
-        return mapToDTO(updated);
+        return DTOMapper.mapMovieToDTO(updated);
     }
 
     public Set<MovieDTO> getAllMovies()
     {
         return movieDAO.getAll()
                 .stream()
-                .map(this::mapToDTO)
+                .map(DTOMapper::mapMovieToDTO)
                 .collect(Collectors.toSet());
     }
 
     public MovieDTO findById(Long id)
     {
         Movie movie = movieDAO.getByID(id);
-        return mapToDTO(movie);
+        return DTOMapper.mapMovieToDTO(movie);
     }
 
     public MovieFullDetailDTO getFullMovieDetail(Long id)
     {
         Movie movie = movieDAO.getByIdWithDetails(id);
 
-        MovieDTO movieDTO = mapToDTO(movie);
+        MovieDTO movieDTO = DTOMapper.mapMovieToDTO(movie);
 
         List<CastDTO> cast = movie.getCast()
                 .stream()
-                .map(this::mapCastToDTO)
+                .map(DTOMapper::mapCastToDTO)
                 .toList();
 
         List<GenreDTO> genres = movie.getGenres()
                 .stream()
-                .map(this::mapGenreToDTO)
+                .map(DTOMapper::mapGenreToDTO)
                 .toList();
 
         return new MovieFullDetailDTO(movieDTO, cast, genres);
@@ -130,55 +132,11 @@ public class MovieService
                 .map(a -> new Cast(null, Role.DIRECTOR, personDAO.getByID(a.personId())))
                 .collect(Collectors.toSet());
 
-        castActors.forEach(cm -> {
-            movie.addCast(cm);
-        });
+        castActors.forEach(movie::addCast);
 
-        castDirectors.forEach(cm -> {
-            movie.addCast(cm);
-        });
+        castDirectors.forEach(movie::addCast);
 
         return movie;
-    }
-
-    private MovieDTO mapToDTO(Movie movie) {
-        return new MovieDTO(
-                movie.getId(),
-                movie.getOriginalTitle(),
-                movie.getTitle(),
-                movie.getOriginCountry(),
-                movie.getLanguage(),
-                movie.getDescription(),
-                movie.getReleaseYear(),
-                movie.getRuntime(),
-                movie.getStatus(),
-                movie.getTagline(),
-                movie.getRating()
-        );
-    }
-
-    private CastDTO mapCastToDTO(Cast cast)
-    {
-        PersonDTO personDTO = new PersonDTO(
-                cast.getPerson().getId(),
-                cast.getPerson().getName(),
-                cast.getPerson().getGender()
-        );
-
-        return new CastDTO(
-                cast.getId(),
-                cast.getCharacterName(),
-                cast.getRole(),
-                personDTO
-        );
-    }
-
-    private GenreDTO mapGenreToDTO(Genre genre)
-    {
-        return new GenreDTO(
-                genre.getId(),
-                genre.getName()
-        );
     }
 
     public void validateNotNull(Object exists)
