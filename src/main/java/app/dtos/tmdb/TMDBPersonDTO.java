@@ -1,4 +1,4 @@
-package app.dtos;
+package app.dtos.tmdb;
 
 import app.enums.Gender;
 import app.enums.Role;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record CrewDTO(
+public record TMDBPersonDTO(
         @JsonProperty("id")
         Long personId,
 
@@ -22,20 +22,20 @@ public record CrewDTO(
         @JsonProperty("original_name")
         String originalName,
 
-        @JsonProperty("department")
-        String department,
+        @JsonProperty("cast_id")
+        int castId,
 
-        @JsonProperty("job")
-        String job
+        @JsonProperty("character")
+        String characterName
 )
 {
-        public Gender getGenderEnum() // TODO Rename
-        {
-                return Gender.fromValue(gender);
-        }
+    public Gender getGenderEnum() // TODO Rename
+    {
+        return Gender.fromValue(gender);
+    }
 
-        public Role getRoleEnum() // TODO Rename
-        {
-                return Role.fromValue(role);
-        }
+    public Role getRoleEnum() // TODO Rename
+    {
+        return Role.fromValue(role);
+    }
 }

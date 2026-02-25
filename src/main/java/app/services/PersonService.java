@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dtos.MovieDetailDTO;
+import app.dtos.tmdb.TMDBMovieDetailDTO;
 import app.entities.Person;
 import app.persistence.daos.IPersonDAO;
 
@@ -18,10 +18,10 @@ public class PersonService
         this.personDAO = personDAO;
     }
 
-    public void saveAllPersons(List<MovieDetailDTO> movieDetailDTOS)
+    public void saveAllPersons(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS)
     {
-        Set<Person> actors = movieDetailDTOS.stream()
-                .flatMap(m -> m.creditDTO().actorsDTOs().stream())
+        Set<Person> actors = TMDBMovieDetailDTOS.stream()
+                .flatMap(m -> m.TMDBCreditDTO().actorsDTOs().stream())
                 .filter(a -> a.role().equals("Acting"))
                 .map(a -> new Person(
                         a.personId(),
@@ -29,8 +29,8 @@ public class PersonService
                         a.getGenderEnum()))
                 .collect(Collectors.toSet());
 
-        Set<Person> directors = movieDetailDTOS.stream()
-                .flatMap(m -> m.creditDTO().crewDTOs().stream())
+        Set<Person> directors = TMDBMovieDetailDTOS.stream()
+                .flatMap(m -> m.TMDBCreditDTO().TMDBCrewDTOS().stream())
                 .filter(d -> d.job().equals("Director") || d.department().equals("Directing"))
                 .map(d -> new Person(
                         d.personId(),

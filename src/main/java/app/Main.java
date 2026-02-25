@@ -1,14 +1,14 @@
 package app;
 
 import app.config.HibernateConfig;
-import app.dtos.GenreResultDTO;
-import app.dtos.MovieDTO;
-import app.dtos.MovieDetailDTO;
-import app.integrations.ITMBDService;
-import app.integrations.TMBDService;
+import app.dtos.tmdb.TMDBGenreResultDTO;
+import app.dtos.tmdb.TMDBMovieDTO;
+import app.dtos.tmdb.TMDBMovieDetailDTO;
+import app.integrations.ITMBDClient;
+import app.integrations.TMBDClient;
 import app.persistence.MovieDAO;
 import app.persistence.daos.*;
-import app.services.MovieService;
+import app.services.MovieFetchingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityManagerFactory;
@@ -27,20 +27,20 @@ public class Main {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        ITMBDService tmdbService = new TMBDService(client, objectMapper, API_ACCESS_TOKEN);
-        MovieService movieService = new MovieService(tmdbService);
+        ITMBDClient tmdbService = new TMBDClient(client, objectMapper, API_ACCESS_TOKEN);
+        MovieFetchingService movieFetchingService = new MovieFetchingService(tmdbService);
         IMovieDAO movieDAO = new MovieDAO(emf);
         IPersonDAO personDAO = new PersonDAO(emf);
         IGenreDAO genreDAO = new GenreDAO(emf);
 
-        GenreResultDTO genreResultDTO = tmdbService.getAllGenres();
-        List<MovieDTO> danishMovieDTOS = movieService.getAllDaMovies(100);
+        TMDBGenreResultDTO TMDBGenreResultDTO = tmdbService.getAllGenres();
+        List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
 
-        List<Long> movieIds = danishMovieDTOS.stream()
-                .map(MovieDTO::movieId)
+        List<Long> movieIds = danishTMDBMovieDTOS.stream()
+                .map(TMDBMovieDTO::movieId)
                 .toList();
 
-        List<MovieDetailDTO> movieDetailDTOS = movieService.getAllMovieDetails(movieIds);
+        List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
     }
 
 }

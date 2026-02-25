@@ -1,4 +1,4 @@
-package app.dtos;
+package app.dtos.tmdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record MovieResultDTO(
+public record TMDBMovieResultDTO(
         @JsonProperty("page")
         int page,
 
         @JsonProperty("results")
-        List<MovieDTO> movieDTOS,
+        List<TMDBMovieDTO> TMDBMovieDTOS,
 
         @JsonProperty("total_pages")
         int totalPages,

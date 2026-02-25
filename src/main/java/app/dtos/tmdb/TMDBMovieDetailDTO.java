@@ -1,4 +1,4 @@
-package app.dtos;
+package app.dtos.tmdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,12 +7,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record MovieDetailDTO(
+public record TMDBMovieDetailDTO(
         @JsonProperty("id")
         Long id,
 
         @JsonProperty("genres")
-        List<GenreDTO> genres,
+        List<TMDBGenreDTO> genres,
 
         @JsonProperty("origin_country")
         List<String> originCountries,
@@ -45,7 +45,7 @@ public record MovieDetailDTO(
         double voteAverage,
 
         @JsonProperty("credits")
-        CreditDTO creditDTO
+        TMDBCreditDTO TMDBCreditDTO
         )
 {
 }

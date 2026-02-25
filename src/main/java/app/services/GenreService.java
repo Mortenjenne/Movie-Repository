@@ -1,10 +1,7 @@
 package app.services;
 
-import app.dtos.GenreResultDTO;
-import app.dtos.MovieDetailDTO;
+import app.dtos.tmdb.TMDBGenreResultDTO;
 import app.persistence.daos.IGenreDAO;
-
-import java.util.List;
 
 public class GenreService
 {
@@ -15,14 +12,14 @@ public class GenreService
         this.genreDAO = genreDAO;
     }
 
-    public void saveAllGenres(GenreResultDTO genreResultDTO)
+    public void saveAllGenres(TMDBGenreResultDTO TMDBGenreResultDTO)
     {
-        if(genreResultDTO == null)
+        if(TMDBGenreResultDTO == null)
         {
             throw new IllegalArgumentException("List of genres cant be null");
         }
 
-        genreResultDTO.genres().forEach(genre ->
+        TMDBGenreResultDTO.genres().forEach(genre ->
         {
             genreDAO.create(genre);
         });
