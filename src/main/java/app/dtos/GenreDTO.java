@@ -1,4 +1,7 @@
 package app.dtos;
 
-public record GenreDTO() {
+public record GenreDTO(
+        Long genreId,
+        String genre
+) {
 }

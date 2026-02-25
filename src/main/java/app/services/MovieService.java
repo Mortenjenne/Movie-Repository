@@ -1,8 +1,7 @@
 package app.services;
 
-import app.dtos.MovieDTO;
+import app.dtos.*;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
-import app.dtos.UpdateMovieDTO;
 import app.entities.Cast;
 import app.entities.Genre;
 import app.entities.Movie;
@@ -59,6 +58,25 @@ public class MovieService
     {
         Movie movie = movieDAO.getByID(id);
         return mapToDTO(movie);
+    }
+
+    public MovieFullDetailDTO getFullMovieDetail(Long id)
+    {
+        Movie movie = movieDAO.getByIdWithDetails(id);
+
+        MovieDTO movieDTO = mapToDTO(movie);
+
+        List<CastDTO> cast = movie.getCast()
+                .stream()
+                .map(this::mapCastToDTO)
+                .toList();
+
+        List<GenreDTO> genres = movie.getGenres()
+                .stream()
+                .map(this::mapGenreToDTO)
+                .toList();
+
+        return new MovieFullDetailDTO(movieDTO, cast, genres);
     }
 
     public void saveAllMovies(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS)
@@ -136,6 +154,30 @@ public class MovieService
                 movie.getStatus(),
                 movie.getTagline(),
                 movie.getRating()
+        );
+    }
+
+    private CastDTO mapCastToDTO(Cast cast)
+    {
+        PersonDTO personDTO = new PersonDTO(
+                cast.getPerson().getId(),
+                cast.getPerson().getName(),
+                cast.getPerson().getGender()
+        );
+
+        return new CastDTO(
+                cast.getId(),
+                cast.getCharacterName(),
+                cast.getRole(),
+                personDTO
+        );
+    }
+
+    private GenreDTO mapGenreToDTO(Genre genre)
+    {
+        return new GenreDTO(
+                genre.getId(),
+                genre.getName()
         );
     }
 

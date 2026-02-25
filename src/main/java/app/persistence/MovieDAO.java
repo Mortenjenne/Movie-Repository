@@ -136,6 +136,27 @@ public class MovieDAO implements IMovieDAO
         }
     }
 
+    public Movie getByIdWithDetails(Long id)
+    {
+        validateId(id);
+
+        try(EntityManager em = emf.createEntityManager())
+        {
+            try
+            {
+                return em.createQuery("SELECT m FROM Movie m LEFT JOIN FETCH m.cast LEFT JOIN FETCH m.genres WHERE m.id = :id", Movie.class)
+                        .setParameter("id", id)
+                        .getSingleResult();
+
+            }
+            catch (NoResultException e)
+            {
+                throw new EntityNotFoundException("Movie with ID " + id + " was not found." + e.getMessage());
+            }
+        }
+
+    }
+
     @Override
     public List<Movie> getMoviesByHighestRating(int limit)
     {

@@ -2,6 +2,8 @@ package app;
 
 import app.config.HibernateConfig;
 import app.dtos.GenreDTO;
+import app.dtos.MovieDTO;
+import app.dtos.MovieFullDetailDTO;
 import app.dtos.tmdb.TMDBGenreResultDTO;
 import app.dtos.tmdb.TMDBMovieDTO;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
@@ -20,6 +22,7 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.net.http.HttpClient;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
     private static final String API_ACCESS_TOKEN = System.getenv("API_ACCESS_TOKEN");
@@ -43,20 +46,26 @@ public class Main {
         PersonService personService = new PersonService(personDAO);
         GenreService genreService = new GenreService(genreDAO);
 
-        List<Genre> genres = movieFetchingService.getAllGenres();
-        List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
-        List<Long> movieIds = danishTMDBMovieDTOS.stream()
-                .map(TMDBMovieDTO::movieId)
-                .toList();
+        //List<Genre> genres = movieFetchingService.getAllGenres();
+        //List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
+        //List<Long> movieIds = danishTMDBMovieDTOS.stream()
+        //        .map(TMDBMovieDTO::movieId)
+        //        .toList();
 
 
-        List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
+        //List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
 
-        genreService.saveAllGenres(genres);
-        System.out.println("persisted genres");
-        personService.saveAllPersons(TMDBMovieDetailDTOS);
-        System.out.println("persisted persons");
-        movieService.saveAllMovies(TMDBMovieDetailDTOS);
+        //genreService.saveAllGenres(genres);
+        //System.out.println("persisted genres");
+        //personService.saveAllPersons(TMDBMovieDetailDTOS);
+        //System.out.println("persisted persons");
+        //movieService.saveAllMovies(TMDBMovieDetailDTOS);
+
+        Set<MovieDTO> allMovies = movieService.getAllMovies();
+        System.out.println(allMovies.size());
+
+        MovieFullDetailDTO movieFullDetailDTO = movieService.getFullMovieDetail(1583668L);
+        System.out.println(movieFullDetailDTO);
     }
 
 }

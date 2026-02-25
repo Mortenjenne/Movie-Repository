@@ -11,4 +11,6 @@ public interface IMovieDAO extends IEntityDAO<Movie, Long>, IEntityReader<Movie,
     public List<Movie> getMoviesByLowestRating(int limit);
 
     public Movie getMovieByTitle(String title);
+
+    Movie getByIdWithDetails(Long id);
 }
