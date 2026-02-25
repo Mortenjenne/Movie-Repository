@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dtos.MovieDetailDTO;
+import app.dtos.UpdateMovieDTO;
 import app.entities.Cast;
 import app.entities.Genre;
 import app.entities.Movie;
@@ -17,10 +18,26 @@ public class MovieServiceNew
     private final IMovieDAO movieDAO;
     private final IPersonDAO personDAO;
 
-    public MovieServiceNew(IMovieDAO movieDAO, IPersonDAO personDAO) {
+    public MovieServiceNew(IMovieDAO movieDAO, IPersonDAO personDAO)
+    {
 
         this.movieDAO = movieDAO;
         this.personDAO = personDAO;
+    }
+
+    public void submitMovie(MovieDetailDTO movieDetailDTO)
+    {
+
+    }
+
+    public void updateMovie(UpdateMovieDTO updateMovieDTO)
+    {
+        validateNotNull(updateMovieDTO);
+
+        Movie movie = movieDAO.getByID(updateMovieDTO.movieId());
+        movie.setTitle(updateMovieDTO.title());
+
+        Movie updated = movieDAO.update(movie);
     }
 
     public void saveAllMovies(List<MovieDetailDTO> movieDetailDTOS)
@@ -72,6 +89,13 @@ public class MovieServiceNew
 
             movieDAO.create(movie);
         });
+    }
 
+    public void validateNotNull(Object exists)
+    {
+        if(exists == null)
+        {
+            throw new IllegalArgumentException("Movie cant be null");
+        }
     }
 }
