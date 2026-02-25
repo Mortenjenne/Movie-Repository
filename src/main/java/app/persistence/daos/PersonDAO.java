@@ -68,7 +68,8 @@ public class PersonDAO implements IPersonDAO
 
         try (EntityManager em = emf.createEntityManager())
         {
-            validatePersonExists(em, person);
+            Person exits = em.find(Person.class, person.getId());
+            validatePersonExists(exits, person.getId());
 
             try
             {
@@ -93,7 +94,7 @@ public class PersonDAO implements IPersonDAO
         try (EntityManager em = emf.createEntityManager())
         {
             Person managedPerson = em.find(Person.class, id);
-            validatePersonExists(em, managedPerson);
+            validatePersonExists(managedPerson, id);
 
             try {
                 em.getTransaction().begin();
@@ -142,12 +143,11 @@ public class PersonDAO implements IPersonDAO
         }
     }
 
-    private void validatePersonExists(EntityManager em, Person person)
+    private void validatePersonExists(Person exists, Long id)
     {
-        Person exists = em.find(Person.class, person);
         if (exists == null)
         {
-            throw new EntityNotFoundException("Person with ID " + person.getId() + " was not found.");
+            throw new EntityNotFoundException("Person with ID " + id + " was not found.");
         }
     }
 

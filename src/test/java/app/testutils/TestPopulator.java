@@ -56,11 +56,13 @@ public class TestPopulator
         Person thomas = new Person(2L,"Thomas Vinterberg", Gender.MALE);
         Person charlie = new Person(3L, "Charlie Sheen", Gender.MALE);
         Person oliver = new Person(4L,"Oliver Stone", Gender.MALE);
+        Person babette = new Person(5L,"Sidse Babette", Gender.FEMALE);
 
         seeded.put("person_mads", personDAO.create(mads));
         seeded.put("person_thomas", personDAO.create(thomas));
         seeded.put("person_charlie", personDAO.create(charlie));
         seeded.put("person_oliver", personDAO.create(oliver));
+        seeded.put("person_sidse", personDAO.create(babette));
     }
 
     private void populateMovies()
