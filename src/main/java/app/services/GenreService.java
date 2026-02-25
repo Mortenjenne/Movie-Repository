@@ -1,7 +1,10 @@
 package app.services;
 
 import app.dtos.tmdb.TMDBGenreResultDTO;
+import app.entities.Genre;
 import app.persistence.daos.IGenreDAO;
+
+import java.util.List;
 
 public class GenreService
 {
@@ -12,14 +15,14 @@ public class GenreService
         this.genreDAO = genreDAO;
     }
 
-    public void saveAllGenres(TMDBGenreResultDTO TMDBGenreResultDTO)
+    public void saveAllGenres(List<Genre> genres)
     {
-        if(TMDBGenreResultDTO == null)
+        if(genres == null)
         {
             throw new IllegalArgumentException("List of genres cant be null");
         }
 
-        TMDBGenreResultDTO.genres().forEach(genre ->
+        genres.forEach(genre ->
         {
             genreDAO.create(genre);
         });

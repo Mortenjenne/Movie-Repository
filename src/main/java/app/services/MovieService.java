@@ -74,18 +74,15 @@ public class MovieService
         });
     }
 
-
-
     private Movie buildMovie(TMDBMovieDetailDTO dto) {
         Set<Genre> genres = dto.genres().stream()
                 .map(g -> new Genre(g.movieId(), g.name()))
                 .collect(Collectors.toSet());
 
-        String originContry = "";
+        String originCountry = "";
 
-        if(dto.originCountries().get(0) != null)
-        {
-            originContry = dto.originCountries().get(0);
+        if (dto.originCountries() != null && !dto.originCountries().isEmpty()) {
+            originCountry = dto.originCountries().get(0);
         }
 
         Movie movie = new Movie(
@@ -98,7 +95,7 @@ public class MovieService
                 dto.voteAverage(),
                 dto.tagline(),
                 dto.status(),
-                originContry,
+                originCountry,
                 dto.runtime(),
                 genres
         );
