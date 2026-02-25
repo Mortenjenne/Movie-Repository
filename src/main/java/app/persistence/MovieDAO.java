@@ -6,6 +6,7 @@ import app.persistence.daos.IMovieDAO;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MovieDAO implements IMovieDAO
@@ -132,6 +133,28 @@ public class MovieDAO implements IMovieDAO
             {
                 throw new EntityNotFoundException("Movie with ID " + id + " was not found." + e.getMessage());
             }
+        }
+    }
+
+    @Override
+    public List<Movie> getMoviesByHighestRating(int limit)
+    {
+        try(EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.rating DESC", Movie.class)
+                    .setMaxResults(limit)
+                    .getResultList();
+        }
+    }
+
+    @Override
+    public List<Movie> getMoviesByLowestRating(int limit)
+    {
+        try(EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT m FROM Movie m ORDER BY m.rating ASC", Movie.class)
+                    .setMaxResults(limit)
+                    .getResultList();
         }
     }
 
