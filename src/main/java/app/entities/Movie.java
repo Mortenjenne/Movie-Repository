@@ -20,6 +20,7 @@ public class Movie implements IEntity
     @Id
     @Setter(AccessLevel.NONE)
     @EqualsAndHashCode.Include
+    @Column(name = "movie_id", unique = true)
     private Long id; // TMDB ID
 
     @Column(name = "title")

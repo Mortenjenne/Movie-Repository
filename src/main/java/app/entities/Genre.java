@@ -14,6 +14,7 @@ import java.util.Set;
 public class Genre implements IEntity
 {
     @Id
+    @Column(name = "genre_id", unique = true)
     private Long id; // TMDB ID
 
     @Setter
