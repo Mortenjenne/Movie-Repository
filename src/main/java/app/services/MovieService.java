@@ -1,5 +1,6 @@
 package app.services;
 
+import app.dtos.MovieDTO;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
 import app.dtos.UpdateMovieDTO;
 import app.entities.Cast;
@@ -25,8 +26,47 @@ public class MovieService
         this.personDAO = personDAO;
     }
 
-    public void submitMovie(TMDBMovieDetailDTO TMDBMovieDetailDTO)
+    public MovieDTO submitMovie(TMDBMovieDetailDTO dto)
     {
+        validateNotNull(dto);
+
+        Set<Genre> genres = dto.genres().stream()
+                .map(g -> new Genre(g.movieId(), g.name()))
+                .collect(Collectors.toSet());
+
+        Movie movie = new Movie(
+                dto.id(),
+                dto.title(),
+                dto.originalTitle(),
+                dto.overview(),
+                dto.releaseDate(),
+                dto.originalLanguage(),
+                dto.voteAverage(),
+                dto.tagline(),
+                dto.status(),
+                genres
+        );
+
+        Set<Cast> castActors = dto.TMDBCreditDTO().actorsDTOs()
+                .stream()
+                .filter(a -> a.role().equals("Acting"))
+                .map(a -> new Cast(a.characterName(), Role.ACTOR, personDAO.getByID(a.personId())))
+                .collect(Collectors.toSet());
+
+        Set<Cast> castDirectors = dto.TMDBCreditDTO().TMDBCrewDTOS()
+                .stream()
+                .filter(a -> a.job().equals("Director"))
+                .map(a -> new Cast(null, Role.DIRECTOR, personDAO.getByID(a.personId())))
+                .collect(Collectors.toSet());
+
+        castActors.forEach(cm -> {
+            movie.addCast(cm);
+        });
+
+        castDirectors.forEach(cm -> {
+            movie.addCast(cm);
+        });
+
 
     }
 
