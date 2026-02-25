@@ -1,4 +1,4 @@
-package app.dtos;
+package app.dtos.tmdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record MovieDTO(
+public record TMDBMovieDTO(
         @JsonProperty("id")
         Long movieId,
 

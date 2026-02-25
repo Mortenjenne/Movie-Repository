@@ -1,4 +1,4 @@
-package app.dtos;
+package app.dtos.tmdb;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record CreditDTO(
+public record TMDBCreditDTO(
 
         @JsonProperty("cast")
-        List<PersonDTO> actorsDTOs,
+        List<TMDBPersonDTO> actorsDTOs,
 
         @JsonProperty("crew")
-        List<CrewDTO> crewDTOs
+        List<TMDBCrewDTO> TMDBCrewDTOS
 ) {
 }
