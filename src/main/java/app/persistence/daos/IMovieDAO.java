@@ -13,4 +13,10 @@ public interface IMovieDAO extends IEntityDAO<Movie, Long>, IEntityReader<Movie,
     public Movie getMovieByTitle(String title);
 
     Movie getByIdWithDetails(Long id);
+
+    Double getAverageMovieRatings();
+
+    boolean existsById(Long id);
+
+    List<Movie> searchByTitle(String title);
 }

@@ -30,6 +30,8 @@ public class MovieService
     {
         validateNotNull(dto);
 
+        boolean exists = movieDAO.existsById(dto.id());
+
         Movie movie = buildMovie(dto);
         Movie created = movieDAO.create(movie);
 

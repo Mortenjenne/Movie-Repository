@@ -199,6 +199,40 @@ public class MovieDAO implements IMovieDAO
         }
     }
 
+    @Override
+    public List<Movie> searchByTitle(String title)
+    {
+        validateTitle(title);
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery(
+                            "SELECT DISTINCT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(:title)",
+                            Movie.class
+                    )
+                    .setParameter("title", "%" + title + "%")
+                    .getResultList();
+        }
+    }
+
+    @Override
+    public boolean existsById(Long id)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.find(Movie.class, id) != null;
+        }
+    }
+
+    public Double getAverageMovieRatings()
+    {
+        try(EntityManager em = emf.createEntityManager())
+        {
+            TypedQuery<Double> query = em.createQuery("SELECT avg (m.rating) FROM Movie m", Double.class);
+            return query.getSingleResult();
+        }
+    }
+
     private void rollback(EntityManager em)
     {
         if (em.getTransaction().isActive())

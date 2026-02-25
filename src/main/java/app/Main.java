@@ -12,10 +12,7 @@ import app.integrations.ITMBDClient;
 import app.integrations.TMBDClient;
 import app.persistence.MovieDAO;
 import app.persistence.daos.*;
-import app.services.GenreService;
-import app.services.MovieFetchingService;
-import app.services.MovieService;
-import app.services.PersonService;
+import app.services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityManagerFactory;
@@ -43,6 +40,7 @@ public class Main {
         IGenreDAO genreDAO = new GenreDAO(emf);
 
         MovieService movieService = new MovieService(movieDAO, personDAO);
+        MovieSearchService movieSearchService = new MovieSearchService(movieDAO);
         PersonService personService = new PersonService(personDAO);
         GenreService genreService = new GenreService(genreDAO);
 
@@ -61,11 +59,14 @@ public class Main {
         //System.out.println("persisted persons");
         //movieService.saveAllMovies(TMDBMovieDetailDTOS);
 
-        Set<MovieDTO> allMovies = movieService.getAllMovies();
-        System.out.println(allMovies.size());
+        //Set<MovieDTO> allMovies = movieService.getAllMovies();
+        //System.out.println(allMovies.size());
 
         MovieFullDetailDTO movieFullDetailDTO = movieService.getFullMovieDetail(1583668L);
         System.out.println(movieFullDetailDTO);
+
+        List<MovieDTO> result = movieSearchService.searchByTitle("mine");
+        result.forEach(System.out::println);
     }
 
 }
