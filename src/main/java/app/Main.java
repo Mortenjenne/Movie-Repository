@@ -49,7 +49,7 @@ public class Main {
         MovieService movieService = new MovieService(movieDAO, personDAO);
         MovieSearchService movieSearchService = new MovieSearchService(movieDAO);
 
-        System.out.println("\nFetching movies (movie id's) from TMDB API...");
+        System.out.print("\nFetching movies (movie id's) from TMDB API... ");
 
         List<Genre> genres = movieFetchingService.getAllGenres();
         List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
@@ -58,21 +58,30 @@ public class Main {
                 .map(TMDBMovieDTO::movieId)
                 .collect(Collectors.toSet());
 
-        System.out.println("\nNumber of unique Danish movies fetched from TMDB API: " +
+        System.out.print(ExecutionTimer.split());
+        System.out.println(
+                "\nNumber of unique Danish movies fetched from TMDB API: " +
                 movieIds.stream().distinct().count() + "\n"
         );
 
-        System.out.println("Fetching movie details from TMDB API...");
+        System.out.print("Fetching movie details from TMDB API... ");
         List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
+        System.out.println(ExecutionTimer.split());
 
         System.out.println("Persisting...");
+
+        System.out.print("Persisting genres... ");
         genreService.saveAllGenres(genres);
-        System.out.println("Persisted genres...");
+        System.out.print(ExecutionTimer.split());
+
+        System.out.print("Persisting persons... ");
         personService.saveAllPersons(TMDBMovieDetailDTOS);
-        System.out.println("Persisted persons...");
+        System.out.print(ExecutionTimer.split());
+
         try {
+            System.out.print("Persisting movies... ");
             movieService.saveAllMovies(TMDBMovieDetailDTOS);
-            System.out.println("Persisted movies...");
+            System.out.print(ExecutionTimer.split());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -111,6 +120,6 @@ public class Main {
         Double totalAverage = movieSearchService.getAverageRating();
         System.out.println(String.format("Rating: %.2f\n", totalAverage));
 
-        ExecutionTimer.finish();
+        System.out.println(ExecutionTimer.finish());
     }
 }

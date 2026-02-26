@@ -2,27 +2,30 @@ package app.utils;
 
 public class ExecutionTimer
 {
-    private static Long start;
+    private static long start;
 
     public static void start()
     {
         start = System.currentTimeMillis();
     }
 
-    public static void finish()
+    public static String split()
     {
-        Long finish = System.currentTimeMillis();
-        Long elapsedTime = finish - start;
-        long minutes = (elapsedTime / 1000) / 60;
-        long seconds = (elapsedTime / 1000) % 60;
-        long milliseconds = elapsedTime % 1000;
+        return formatElapsed("done, split time", System.currentTimeMillis());
+    }
 
-        // Only 2 decimals on milliseconds
-        long hundredths = milliseconds / 10;
+    public static String finish()
+    {
+        return formatElapsed("Total runtime", System.currentTimeMillis());
+    }
 
-        System.out.printf("Total runtime: %02d:%02d.%02d%n",
-                minutes,
-                seconds,
-                hundredths);
+    private static String formatElapsed(String label, long endTime)
+    {
+        long elapsed = endTime - start;
+        long minutes = (elapsed / 1000) / 60;
+        long seconds = (elapsed / 1000) % 60;
+        long hundredths = (elapsed % 1000) / 10;
+
+        return String.format("%s: %02d:%02d.%02d%n", label, minutes, seconds, hundredths);
     }
 }
