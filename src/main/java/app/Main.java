@@ -49,6 +49,7 @@ public class Main {
         MovieService movieService = new MovieService(movieDAO, personDAO);
         MovieSearchService movieSearchService = new MovieSearchService(movieDAO);
 
+        System.out.println("\nFetching movies (movie id's) from TMDB API...");
 
         List<Genre> genres = movieFetchingService.getAllGenres();
         List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
@@ -93,6 +94,10 @@ public class Main {
         System.out.println("\n=============== SEARCH BY DIRECTOR ===============");
         List<MovieDTO> directorMovies = movieSearchService.searchByDirector("Anders Thomas Jensen");
         directorMovies.forEach(System.out::println);
+
+        System.out.println("\n=============== SEARCH BY GENRE ===============");
+        List<MovieDTO> moviesByGenre = movieSearchService.getMoviesByGenre("Western");
+        moviesByGenre.forEach(System.out::println);
 
         System.out.println("\n=============== LOWEST RATED ===============");
         List<MovieDTO> lowestRated = movieSearchService.getLowestRated(10);
