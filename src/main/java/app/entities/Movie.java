@@ -16,7 +16,6 @@ import java.util.Set;
 @Entity
 public class Movie implements IEntity
 {
-
     @Id
     @Setter(AccessLevel.NONE)
     @EqualsAndHashCode.Include
