@@ -43,6 +43,8 @@ public class MovieSearchService implements IMovieSearchService {
                 .map(DTOMapper::mapMovieToDTO)
                 .toList();
     }
+
+    // Will not be implemented
     @Override
     public List<MovieDTO> getMostPopular(int limit)
     {
@@ -70,7 +72,10 @@ public class MovieSearchService implements IMovieSearchService {
     @Override
     public List<MovieDTO> getMoviesByGenre(String genreName)
     {
-        return null;
+        return movieDAO.getMoviesByGenre(genreName)
+                .stream()
+                .map(DTOMapper::mapMovieToDTO)
+                .toList();
     }
 
     @Override
