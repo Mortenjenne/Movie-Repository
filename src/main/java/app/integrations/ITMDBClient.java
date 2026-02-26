@@ -4,7 +4,7 @@ import app.dtos.tmdb.TMDBGenreResultDTO;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
 import app.dtos.tmdb.TMDBMovieResultDTO;
 
-public interface ITMBDClient
+public interface ITMDBClient
 {
     TMDBMovieDetailDTO getMovieDetailById(Long id);
 

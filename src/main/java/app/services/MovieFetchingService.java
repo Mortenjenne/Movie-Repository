@@ -5,18 +5,23 @@ import app.dtos.tmdb.TMDBMovieDTO;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
 import app.dtos.tmdb.TMDBMovieResultDTO;
 import app.entities.Genre;
-import app.integrations.ITMBDClient;
+import app.integrations.ITMDBClient;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MovieFetchingService
 {
-    private final ITMBDClient tmdbService;
+    private final ITMDBClient tmdbService;
     private static final int TMDB_MAX_PAGES = 500;
 
-    public MovieFetchingService(ITMBDClient tmdbService) {
+    public MovieFetchingService(ITMDBClient tmdbService)
+    {
         this.tmdbService = tmdbService;
     }
 
@@ -24,12 +29,37 @@ public class MovieFetchingService
     {
         List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = new ArrayList<>();
 
-        movieIds.forEach(id -> {
-
+        movieIds.forEach(id ->
+        {
             TMDBMovieDetailDTO TMDBMovieDetailDTO = tmdbService.getMovieDetailById(id);
             TMDBMovieDetailDTOS.add(TMDBMovieDetailDTO);
         });
         return TMDBMovieDetailDTOS;
+    }
+
+    public List<TMDBMovieDetailDTO> getMovieDetailsWithThreads(Set<Long> movieIds)
+    {
+        List<TMDBMovieDetailDTO> result = new ArrayList<>();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        List<Future<TMDBMovieDetailDTO>> futures = movieIds.stream()
+                .map(id -> executorService.submit(() -> tmdbService.getMovieDetailById(id)))
+                .toList();
+
+        for (Future<TMDBMovieDetailDTO> future : futures)
+        {
+            try
+            {
+                result.add(future.get());
+            }
+            catch (InterruptedException | ExecutionException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+
+        executorService.shutdown();
+        return result;
     }
 
     public List<Genre> getAllGenres()

@@ -12,7 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class TMBDClient implements ITMBDClient
+public class TMDBClient implements ITMDBClient
 {
     private final HttpClient client;
     private final ObjectMapper objectMapper;
@@ -22,7 +22,7 @@ public class TMBDClient implements ITMBDClient
     private final String TMDB_ALL_DA_MOVIES_FROM_5_YEARS = "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=da&page=%d&primary_release_date.gte=2021-01-01&sort_by=popularity.desc&with_original_language=da";
     private final String TMDB_MOVIE_DETAIL = "https://api.themoviedb.org/3/movie/%d?append_to_response=credits";
 
-    public TMBDClient(HttpClient client, ObjectMapper objectMapper, String apiAccessToken) {
+    public TMDBClient(HttpClient client, ObjectMapper objectMapper, String apiAccessToken) {
         this.client = client;
         this.objectMapper = objectMapper;
         this.apiAccessToken = apiAccessToken;

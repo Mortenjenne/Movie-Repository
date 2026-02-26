@@ -7,8 +7,8 @@ import app.dtos.tmdb.TMDBMovieDTO;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
 import app.entities.Genre;
 import app.entities.Person;
-import app.integrations.ITMBDClient;
-import app.integrations.TMBDClient;
+import app.integrations.ITMDBClient;
+import app.integrations.TMDBClient;
 import app.persistence.IGenreDAO;
 import app.persistence.IMovieDAO;
 import app.persistence.daos.MovieDAO;
@@ -39,7 +39,7 @@ public class Main
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        ITMBDClient tmdbClient = new TMBDClient(client, objectMapper, API_ACCESS_TOKEN);
+        ITMDBClient tmdbClient = new TMDBClient(client, objectMapper, API_ACCESS_TOKEN);
 
         IPersonDAO personDAO = new PersonDAO(emf);
         IMovieDAO movieDAO = new MovieDAO(emf);
@@ -108,7 +108,8 @@ public class Main
         );
 
         System.out.print("Fetching movie details from TMDB API... ");
-        List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
+        // List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
+        List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getMovieDetailsWithThreads(movieIds); // Threaded
         System.out.println(ExecutionTimer.split());
 
         System.out.println("Persisting...");
