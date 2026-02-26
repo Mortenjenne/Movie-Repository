@@ -8,7 +8,8 @@ import app.dtos.tmdb.TMDBMovieDetailDTO;
 import java.util.List;
 import java.util.Set;
 
-public interface IMovieService {
+public interface IMovieService
+{
     MovieDTO submitMovie(TMDBMovieDetailDTO dto);
 
     MovieDTO updateMovie(UpdateMovieDTO updateMovieDTO);
@@ -20,6 +21,4 @@ public interface IMovieService {
     MovieFullDetailDTO getFullMovieDetail(Long id);
 
     void saveAllMovies(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS);
-
-    void validateNotNull(Object exists);
 }

@@ -1,4 +1,4 @@
-package app.persistence.daos;
+package app.persistence;
 
 public interface IEntityReader<T, I>
 {

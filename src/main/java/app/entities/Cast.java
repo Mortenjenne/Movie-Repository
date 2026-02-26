@@ -8,8 +8,8 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @ToString
-@Entity
 @Table(name = "movie_cast")
+@Entity
 public class Cast implements IEntity
 {
     @Id

@@ -6,7 +6,8 @@ import app.enums.Gender;
 
 import java.util.List;
 
-public interface IPersonService {
+public interface IPersonService
+{
     Person findOrCreate(Long id, String name, Gender gender);
 
     void saveAllPersons(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS);

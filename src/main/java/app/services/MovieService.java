@@ -6,8 +6,8 @@ import app.entities.Cast;
 import app.entities.Genre;
 import app.entities.Movie;
 import app.enums.Role;
-import app.persistence.daos.IMovieDAO;
-import app.persistence.daos.IPersonDAO;
+import app.persistence.IMovieDAO;
+import app.persistence.IPersonDAO;
 import app.utils.DTOMapper;
 
 import java.util.List;
@@ -123,7 +123,7 @@ public class MovieService implements IMovieService {
 
     private Movie buildMovie(TMDBMovieDetailDTO dto) {
         Set<Genre> genres = dto.genres().stream()
-                .map(g -> new Genre(g.movieId(), g.name()))
+                .map(g -> new Genre(g.genreId(), g.name()))
                 .collect(Collectors.toSet());
 
         String originCountry = "";
@@ -166,7 +166,6 @@ public class MovieService implements IMovieService {
         return movie;
     }
 
-    @Override
     public void validateNotNull(Object exists)
     {
         if(exists == null)

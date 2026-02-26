@@ -1,18 +1,18 @@
 package app;
 
 import app.config.HibernateConfig;
-import app.dtos.GenreDTO;
 import app.dtos.MovieDTO;
 import app.dtos.MovieFullDetailDTO;
-import app.dtos.tmdb.TMDBGenreResultDTO;
 import app.dtos.tmdb.TMDBMovieDTO;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
 import app.entities.Genre;
 import app.integrations.ITMBDClient;
 import app.integrations.TMBDClient;
-import app.persistence.MovieDAO;
+import app.persistence.IGenreDAO;
+import app.persistence.IMovieDAO;
+import app.persistence.daos.MovieDAO;
 import app.persistence.daos.*;
-import app.persistence.daos.IPersonDAO;
+import app.persistence.IPersonDAO;
 import app.services.*;
 import app.utils.ExecutionTimer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,8 +37,7 @@ public class Main {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         ITMBDClient tmbdClient = new TMBDClient(client, objectMapper, API_ACCESS_TOKEN);
-
-
+        
         IPersonDAO personDAO = new PersonDAO(emf);
         IMovieDAO movieDAO = new MovieDAO(emf);
         IGenreDAO genreDAO = new GenreDAO(emf);
@@ -49,42 +48,8 @@ public class Main {
         MovieService movieService = new MovieService(movieDAO, personDAO);
         MovieSearchService movieSearchService = new MovieSearchService(movieDAO);
 
-        System.out.print("\nFetching movies (movie id's) from TMDB API... ");
+        fetchAndPersistApiData(movieFetchingService, genreService, personService, movieService);
 
-        List<Genre> genres = movieFetchingService.getAllGenres();
-        List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
-
-        Set<Long> movieIds = danishTMDBMovieDTOS.stream()
-                .map(TMDBMovieDTO::movieId)
-                .collect(Collectors.toSet());
-
-        System.out.print(ExecutionTimer.split());
-        System.out.println(
-                "\nNumber of unique Danish movies fetched from TMDB API: " +
-                movieIds.stream().distinct().count() + "\n"
-        );
-
-        System.out.print("Fetching movie details from TMDB API... ");
-        List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
-        System.out.println(ExecutionTimer.split());
-
-        System.out.println("Persisting...");
-
-        System.out.print("Persisting genres... ");
-        genreService.saveAllGenres(genres);
-        System.out.print(ExecutionTimer.split());
-
-        System.out.print("Persisting persons... ");
-        personService.saveAllPersons(TMDBMovieDetailDTOS);
-        System.out.print(ExecutionTimer.split());
-
-        try {
-            System.out.print("Persisting movies... ");
-            movieService.saveAllMovies(TMDBMovieDetailDTOS);
-            System.out.print(ExecutionTimer.split());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         Set<MovieDTO> allMovies = movieService.getAllMovies();
         System.out.println("\nNumber of unique danish movies fetched from database: " + allMovies.size());
 
@@ -121,5 +86,44 @@ public class Main {
         System.out.println(String.format("Rating: %.2f\n", totalAverage));
 
         System.out.println(ExecutionTimer.finish());
+    }
+
+    private static void fetchAndPersistApiData(MovieFetchingService movieFetchingService, GenreService genreService, PersonService personService, MovieService movieService)
+    {
+        System.out.print("\nFetching movies (movie id's) from TMDB API... ");
+        List<Genre> genres = movieFetchingService.getAllGenres();
+        List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
+
+        Set<Long> movieIds = danishTMDBMovieDTOS.stream()
+                .map(TMDBMovieDTO::movieId)
+                .collect(Collectors.toSet());
+
+        System.out.print(ExecutionTimer.split());
+        System.out.println(
+                "\nNumber of unique Danish movies fetched from TMDB API: " +
+                movieIds.stream().distinct().count() + "\n"
+        );
+
+        System.out.print("Fetching movie details from TMDB API... ");
+        List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
+        System.out.println(ExecutionTimer.split());
+
+        System.out.println("Persisting...");
+
+        System.out.print("Persisting genres... ");
+        genreService.saveAllGenres(genres);
+        System.out.print(ExecutionTimer.split());
+
+        System.out.print("Persisting persons... ");
+        personService.saveAllPersons(TMDBMovieDetailDTOS);
+        System.out.print(ExecutionTimer.split());
+
+        try {
+            System.out.print("Persisting movies... ");
+            movieService.saveAllMovies(TMDBMovieDetailDTOS);
+            System.out.print(ExecutionTimer.split());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

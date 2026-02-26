@@ -3,7 +3,10 @@ package app.testutils;
 import app.entities.*;
 import app.enums.Gender;
 import app.enums.Role;
-import app.persistence.MovieDAO;
+import app.persistence.IGenreDAO;
+import app.persistence.IMovieDAO;
+import app.persistence.IPersonDAO;
+import app.persistence.daos.MovieDAO;
 import app.persistence.daos.*;
 import jakarta.persistence.EntityManagerFactory;
 

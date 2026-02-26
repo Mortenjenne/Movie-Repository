@@ -1,8 +1,7 @@
 package app.services;
 
-import app.dtos.tmdb.TMDBGenreResultDTO;
 import app.entities.Genre;
-import app.persistence.daos.IGenreDAO;
+import app.persistence.IGenreDAO;
 
 import java.util.List;
 

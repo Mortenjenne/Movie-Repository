@@ -4,6 +4,7 @@ import app.config.HibernateTestConfig;
 import app.entities.Genre;
 import app.entities.IEntity;
 import app.exceptions.DatabaseException;
+import app.persistence.IGenreDAO;
 import app.testutils.TestCleanDB;
 import app.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;

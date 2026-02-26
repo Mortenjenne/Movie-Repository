@@ -3,7 +3,7 @@ package app.services;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
 import app.entities.Person;
 import app.enums.Gender;
-import app.persistence.daos.IPersonDAO;
+import app.persistence.IPersonDAO;
 
 import java.util.HashSet;
 import java.util.List;

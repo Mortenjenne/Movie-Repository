@@ -3,7 +3,7 @@ package app.persistence.daos;
 import app.config.HibernateTestConfig;
 import app.entities.*;
 import app.enums.Role;
-import app.persistence.MovieDAO;
+import app.persistence.IMovieDAO;
 import app.testutils.TestCleanDB;
 import app.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;

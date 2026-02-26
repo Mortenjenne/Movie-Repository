@@ -10,6 +10,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @NoArgsConstructor
+@Table(name = "person")
 @Entity
 public class Person implements IEntity
 {

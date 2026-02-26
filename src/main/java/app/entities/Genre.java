@@ -3,13 +3,12 @@ package app.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @NoArgsConstructor
 @ToString
+@Table(name = "genre")
 @Entity
 public class Genre implements IEntity
 {
@@ -18,7 +17,7 @@ public class Genre implements IEntity
     private Long id; // TMDB ID
 
     @Setter
-    @Column(nullable = false) // TODO add unique constraint in test phase -> keep if working
+    @Column(nullable = false, unique = true)
     private String name;
 
     public Genre(Long id, String name)

@@ -1,7 +1,7 @@
 package app.services;
 
 import app.dtos.MovieDTO;
-import app.persistence.daos.IMovieDAO;
+import app.persistence.IMovieDAO;
 import app.utils.DTOMapper;
 
 import java.util.List;

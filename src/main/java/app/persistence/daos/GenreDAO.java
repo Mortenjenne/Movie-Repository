@@ -2,6 +2,7 @@ package app.persistence.daos;
 
 import app.entities.Genre;
 import app.exceptions.DatabaseException;
+import app.persistence.IGenreDAO;
 import jakarta.persistence.*;
 
 import java.util.HashSet;

@@ -1,12 +1,12 @@
 package app.persistence.daos;
 
 import app.config.HibernateTestConfig;
-import app.entities.Genre;
 import app.entities.IEntity;
 import app.entities.Person;
 import app.enums.Gender;
 
 import app.exceptions.DatabaseException;
+import app.persistence.IPersonDAO;
 import app.testutils.TestCleanDB;
 import app.testutils.TestPopulator;
 import jakarta.persistence.EntityManagerFactory;

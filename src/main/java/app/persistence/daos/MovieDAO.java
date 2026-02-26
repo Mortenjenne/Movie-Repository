@@ -1,8 +1,8 @@
-package app.persistence;
+package app.persistence.daos;
 
 import app.entities.Movie;
 import app.exceptions.DatabaseException;
-import app.persistence.daos.IMovieDAO;
+import app.persistence.IMovieDAO;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -246,7 +246,7 @@ public class MovieDAO implements IMovieDAO
                         .setParameter("title", "%" + title + "%")
                         .getSingleResult();
             }
-            catch (NoResultException e) // TODO is a catch needed here?
+            catch (NoResultException e)
             {
                 throw new EntityNotFoundException("Movie with title " + title + " was not found." + e.getMessage());
             }
