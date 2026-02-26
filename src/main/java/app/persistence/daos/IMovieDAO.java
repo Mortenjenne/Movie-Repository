@@ -16,6 +16,8 @@ public interface IMovieDAO extends IEntityDAO<Movie, Long>, IEntityReader<Movie,
 
     List<Movie> getMoviesByDirector(String director);
 
+    List<Movie> getMoviesByGenre(String genre);
+
     Movie getByIdWithDetails(Long id);
 
     Double getAverageMovieRatings();

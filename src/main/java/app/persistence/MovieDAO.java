@@ -173,6 +173,23 @@ public class MovieDAO implements IMovieDAO
     }
 
     @Override
+    public List<Movie> getMoviesByGenre(String genre)
+    {
+        validateStringInput(genre);
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT DISTINCT m " +
+                                    "FROM Movie m " +
+                                    "JOIN FETCH m.genres g " +
+                                    "WHERE LOWER(g.name) = LOWER(:genre)",
+                            Movie.class)
+                    .setParameter("genre", genre)
+                    .getResultList();
+        }
+    }
+
+    @Override
     public Movie getByIdWithDetails(Long id)
     {
         validateId(id);
