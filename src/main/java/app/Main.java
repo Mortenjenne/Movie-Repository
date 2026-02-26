@@ -14,6 +14,7 @@ import app.persistence.MovieDAO;
 import app.persistence.daos.*;
 import app.persistence.daos.IPersonDAO;
 import app.services.*;
+import app.utils.ExecutionTimer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.EntityManagerFactory;
@@ -27,6 +28,8 @@ public class Main {
     private static final String API_ACCESS_TOKEN = System.getenv("API_ACCESS_TOKEN");
 
     public static void main(String[] args) {
+
+        ExecutionTimer.start();
 
         HttpClient client = HttpClient.newHttpClient();
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
@@ -46,6 +49,7 @@ public class Main {
         MovieService movieService = new MovieService(movieDAO, personDAO);
         MovieSearchService movieSearchService = new MovieSearchService(movieDAO);
 
+        System.out.print("\nFetching movies (movie id's) from TMDB API... ");
 
         List<Genre> genres = movieFetchingService.getAllGenres();
         List<TMDBMovieDTO> danishTMDBMovieDTOS = movieFetchingService.getAllDaMovies(100);
@@ -54,43 +58,68 @@ public class Main {
                 .map(TMDBMovieDTO::movieId)
                 .collect(Collectors.toSet());
 
+        System.out.print(ExecutionTimer.split());
         System.out.println(
-                movieIds.stream().distinct().count()
+                "\nNumber of unique Danish movies fetched from TMDB API: " +
+                movieIds.stream().distinct().count() + "\n"
         );
 
-
+        System.out.print("Fetching movie details from TMDB API... ");
         List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS = movieFetchingService.getAllMovieDetails(movieIds);
+        System.out.println(ExecutionTimer.split());
 
+        System.out.println("Persisting...");
+
+        System.out.print("Persisting genres... ");
         genreService.saveAllGenres(genres);
-        System.out.println("persisted genres");
+        System.out.print(ExecutionTimer.split());
+
+        System.out.print("Persisting persons... ");
         personService.saveAllPersons(TMDBMovieDetailDTOS);
-        System.out.println("persisted persons");
+        System.out.print(ExecutionTimer.split());
+
         try {
+            System.out.print("Persisting movies... ");
             movieService.saveAllMovies(TMDBMovieDetailDTOS);
+            System.out.print(ExecutionTimer.split());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         Set<MovieDTO> allMovies = movieService.getAllMovies();
-        System.out.println(allMovies.size());
+        System.out.println("\nNumber of unique danish movies fetched from database: " + allMovies.size());
 
         MovieFullDetailDTO movieFullDetailDTO = movieService.getFullMovieDetail(1583668L);
+        System.out.println("\n=============== FULL MOVIE DETAILS (BY ID) ===============");
         System.out.println(movieFullDetailDTO);
 
-        System.out.println("-----Search result--------");
+        System.out.println("\n=============== SEARCH BY TITLE ===============");
         List<MovieDTO> result = movieSearchService.searchByTitle("mine");
         result.forEach(System.out::println);
 
-        System.out.println("-----Lowest rated--------");
+        System.out.println("\n=============== SEARCH BY ACTOR ===============");
+        List<MovieDTO> actorMovies = movieSearchService.searchByActor("Mads Mikkelsen");
+        actorMovies.forEach(System.out::println);
+
+        System.out.println("\n=============== SEARCH BY DIRECTOR ===============");
+        List<MovieDTO> directorMovies = movieSearchService.searchByDirector("Anders Thomas Jensen");
+        directorMovies.forEach(System.out::println);
+
+        System.out.println("\n=============== SEARCH BY GENRE ===============");
+        List<MovieDTO> moviesByGenre = movieSearchService.getMoviesByGenre("Western");
+        moviesByGenre.forEach(System.out::println);
+
+        System.out.println("\n=============== LOWEST RATED ===============");
         List<MovieDTO> lowestRated = movieSearchService.getLowestRated(10);
-        lowestRated.forEach(m -> System.out.println(m.originalTitle() + " rating: " + m.voteAverage()));
+        lowestRated.forEach(m -> System.out.println(m.originalTitle() + " | Rating: " + m.voteAverage()));
 
-        System.out.println("-----Highest rated--------");
+        System.out.println("\n=============== HIGHEST RATED ===============");
         List<MovieDTO> highestRated = movieSearchService.getTopRated(10);
-        highestRated.forEach(m -> System.out.println(m.originalTitle() + " rating: " + m.voteAverage()));
+        highestRated.forEach(m -> System.out.println(m.originalTitle() + " | Rating: " + m.voteAverage()));
 
-        System.out.println("-----All movies average rating--------");
+        System.out.println("\n=============== AVERAGE RATING OF ALL MOVIES ===============");
         Double totalAverage = movieSearchService.getAverageRating();
-        System.out.println(totalAverage);
+        System.out.println(String.format("Rating: %.2f\n", totalAverage));
 
+        System.out.println(ExecutionTimer.finish());
     }
 }

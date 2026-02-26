@@ -136,6 +136,60 @@ public class MovieDAO implements IMovieDAO
         }
     }
 
+    @Override
+    public List<Movie> getMoviesByActor(String actor)
+    {
+        validateStringInput(actor);
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT DISTINCT m " +
+                                    "FROM Movie m " +
+                                    "JOIN FETCH m.cast c " +
+                                    "WHERE LOWER(c.person.name) LIKE LOWER(:actor) " +
+                                    "AND c.role = 'ACTOR'",
+                            Movie.class)
+                    .setParameter("actor", "%" + actor + "%")
+                    .getResultList();
+        }
+    }
+
+    @Override
+    public List<Movie> getMoviesByDirector(String director)
+    {
+        validateStringInput(director);
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT DISTINCT m " +
+                                    "FROM Movie m " +
+                                    "JOIN FETCH m.cast c " +
+                                    "WHERE LOWER(c.person.name) LIKE LOWER(:director) " +
+                                    "AND c.role = 'DIRECTOR'",
+                            Movie.class)
+                    .setParameter("director", "%" + director + "%")
+                    .getResultList();
+        }
+    }
+
+    @Override
+    public List<Movie> getMoviesByGenre(String genre)
+    {
+        validateStringInput(genre);
+
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.createQuery("SELECT DISTINCT m " +
+                                    "FROM Movie m " +
+                                    "JOIN FETCH m.genres g " +
+                                    "WHERE LOWER(g.name) = LOWER(:genre)",
+                            Movie.class)
+                    .setParameter("genre", genre)
+                    .getResultList();
+        }
+    }
+
+    @Override
     public Movie getByIdWithDetails(Long id)
     {
         validateId(id);
@@ -182,17 +236,17 @@ public class MovieDAO implements IMovieDAO
     @Override
     public Movie getMovieByTitle(String title)
     {
-        validateTitle(title);
+        validateStringInput(title);
 
         try(EntityManager em = emf.createEntityManager())
         {
             try
             {
-                return em.createQuery("SELECT DISTINCT m FROM Movie m LEFT JOIN FETCH m.cast WHERE m.title = :title", Movie.class)
-                        .setParameter("title", title)
+                return em.createQuery("SELECT DISTINCT m FROM Movie m WHERE LOWER(m.title) LIKE LOWER(:title)", Movie.class)
+                        .setParameter("title", "%" + title + "%")
                         .getSingleResult();
             }
-            catch (NoResultException e)
+            catch (NoResultException e) // TODO is a catch needed here?
             {
                 throw new EntityNotFoundException("Movie with title " + title + " was not found." + e.getMessage());
             }
@@ -202,7 +256,7 @@ public class MovieDAO implements IMovieDAO
     @Override
     public List<Movie> searchByTitle(String title)
     {
-        validateTitle(title);
+        validateStringInput(title);
 
         try (EntityManager em = emf.createEntityManager())
         {
@@ -265,11 +319,11 @@ public class MovieDAO implements IMovieDAO
         }
     }
 
-    private void validateTitle(String title)
+    private void validateStringInput(String title)
     {
         if (title == null || title.trim().isEmpty())
         {
-            throw new IllegalArgumentException("Invalid title: Must be provided and not empty.");
+            throw new IllegalArgumentException("Invalid input: Must be provided and not empty.");
         }
     }
 }

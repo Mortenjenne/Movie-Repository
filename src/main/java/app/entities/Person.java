@@ -19,7 +19,7 @@ public class Person implements IEntity
     private Long id; // TMDB ID
 
     @Setter
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Setter
