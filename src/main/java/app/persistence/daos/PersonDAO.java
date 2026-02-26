@@ -1,5 +1,6 @@
 package app.persistence.daos;
 
+import app.entities.Genre;
 import app.entities.Person;
 import app.exceptions.DatabaseException;
 import app.persistence.IPersonDAO;
@@ -133,6 +134,15 @@ public class PersonDAO implements IPersonDAO
         catch (PersistenceException e)
         {
             throw new DatabaseException("Failed to find person with id: " + id + " " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean existsById(Long id)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.find(Person.class, id) != null;
         }
     }
 

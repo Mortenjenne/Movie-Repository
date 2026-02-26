@@ -7,6 +7,7 @@ import app.dtos.PersonDTO;
 import app.entities.Cast;
 import app.entities.Genre;
 import app.entities.Movie;
+import app.entities.Person;
 
 public class DTOMapper
 {
@@ -24,6 +25,15 @@ public class DTOMapper
                 movie.getStatus(),
                 movie.getTagline(),
                 movie.getRating()
+        );
+    }
+
+    public static PersonDTO mapPersonToDTO(Person person)
+    {
+        return new PersonDTO(
+                person.getId(),
+                person.getName(),
+                person.getGender()
         );
     }
 

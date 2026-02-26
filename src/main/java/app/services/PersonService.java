@@ -1,9 +1,12 @@
 package app.services;
 
+import app.dtos.PersonDTO;
 import app.dtos.tmdb.TMDBMovieDetailDTO;
+import app.entities.Genre;
 import app.entities.Person;
 import app.enums.Gender;
 import app.persistence.IPersonDAO;
+import app.utils.DTOMapper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +19,27 @@ public class PersonService implements IPersonService {
     public PersonService(IPersonDAO personDAO)
     {
         this.personDAO = personDAO;
+    }
+
+    @Override
+    public PersonDTO submitPerson(Person person)
+    {
+        validateNotNull(person);
+        validateId(person.getId());
+
+        boolean exists = personDAO.existsById(person.getId());
+
+        Person result;
+        if(exists)
+        {
+            result = personDAO.update(person);
+        }
+        else
+        {
+            result = personDAO.create(person);
+        }
+
+        return DTOMapper.mapPersonToDTO(result);
     }
 
     @Override
@@ -34,7 +58,29 @@ public class PersonService implements IPersonService {
     @Override
     public void saveAllPersons(List<TMDBMovieDetailDTO> TMDBMovieDetailDTOS)
     {
-        Set<Person> actors = TMDBMovieDetailDTOS.stream()
+        Set<Person> casts = new HashSet<>();
+        casts.addAll(getAllActors(TMDBMovieDetailDTOS));
+        casts.addAll(getAllDirectors(TMDBMovieDetailDTOS));
+
+        casts.forEach(person ->
+        {
+            boolean exists = personDAO.existsById(person.getId());
+
+            if(exists)
+            {
+                personDAO.update(person);
+            }
+            else
+            {
+                personDAO.create(person);
+            }
+        });
+    }
+
+    @Override
+    public Set<Person> getAllActors(List<TMDBMovieDetailDTO> dtos)
+    {
+        return dtos.stream()
                 .flatMap(m -> m.TMDBCreditDTO().actorsDTOs().stream())
                 .filter(a -> a.role().equals("Acting"))
                 .map(a -> new Person(
@@ -42,8 +88,12 @@ public class PersonService implements IPersonService {
                         a.name(),
                         a.getGenderEnum()))
                 .collect(Collectors.toSet());
+    }
 
-        Set<Person> directors = TMDBMovieDetailDTOS.stream()
+    @Override
+    public Set<Person> getAllDirectors(List<TMDBMovieDetailDTO> dtos)
+    {
+        return dtos.stream()
                 .flatMap(m -> m.TMDBCreditDTO().TMDBCrewDTOS().stream())
                 .filter(d -> d.job().equals("Director") || d.department().equals("Directing"))
                 .map(d -> new Person(
@@ -51,14 +101,21 @@ public class PersonService implements IPersonService {
                         d.name(),
                         d.getGenderEnum()))
                 .collect(Collectors.toSet());
+    }
 
-        Set<Person> casts = new HashSet<>();
-        casts.addAll(actors);
-        casts.addAll(directors);
-
-        casts.forEach(person ->
+    private void validateNotNull(Object exists)
+    {
+        if(exists == null)
         {
-            personDAO.create(person);
-        });
+            throw new IllegalArgumentException("Movie cant be null");
+        }
+    }
+
+    private void validateId(Long id)
+    {
+        if (id == null || id <= 0)
+        {
+            throw new IllegalArgumentException("Invalid ID: Must be provided and greater than 0.");
+        }
     }
 }

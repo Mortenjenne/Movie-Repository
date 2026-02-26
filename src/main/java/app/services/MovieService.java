@@ -166,7 +166,7 @@ public class MovieService implements IMovieService {
         return movie;
     }
 
-    public void validateNotNull(Object exists)
+    private void validateNotNull(Object exists)
     {
         if(exists == null)
         {

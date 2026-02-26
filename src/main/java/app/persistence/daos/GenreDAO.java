@@ -1,6 +1,7 @@
 package app.persistence.daos;
 
 import app.entities.Genre;
+import app.entities.Movie;
 import app.exceptions.DatabaseException;
 import app.persistence.IGenreDAO;
 import jakarta.persistence.*;
@@ -134,6 +135,15 @@ public class GenreDAO implements IGenreDAO
         catch (PersistenceException e)
         {
             throw new DatabaseException("Failed to find genre with id: " + id + " " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean existsById(Long id)
+    {
+        try (EntityManager em = emf.createEntityManager())
+        {
+            return em.find(Genre.class, id) != null;
         }
     }
 
